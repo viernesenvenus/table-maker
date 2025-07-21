@@ -2,6 +2,8 @@
 
 Un editor de tablas interactivo para crear y personalizar tablas de eventos. Diseñado específicamente para mostrar información de eventos, precios y mapas de asientos.
 
+🔗 [Ver Demo en Vivo](https://viernesenvenus.github.io/table-maker/)
+
 ## Características
 
 - Vista previa en tiempo real para Desktop, Tablet y Mobile
@@ -15,7 +17,7 @@ Un editor de tablas interactivo para crear y personalizar tablas de eventos. Dis
 
 ## Uso
 
-1. Abre el archivo `index.html` en tu navegador
+1. Abre el [editor en línea](https://viernesenvenus.github.io/table-maker/) o descarga y abre el archivo `index.html` en tu navegador
 2. Usa los controles del panel derecho para personalizar la tabla
 3. Edita las celdas haciendo doble clic
 4. Selecciona múltiples celdas manteniendo SHIFT o CTRL
