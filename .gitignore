@@ -1,0 +1,16 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de respaldo
+*.bak
+*~
+
+# Otros archivos del proyecto que no queremos incluir
+lu2.html
+lu.html
+Tabla.html
+botonesejemplo.html
+cmsbotonesejemplo.html
+cmsbotonesejemplo copy.html
+Screenshot*.png 
