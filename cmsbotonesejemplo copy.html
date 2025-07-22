@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Tabla de Precios - Gestión de Eventos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #262626;
+      background: linear-gradient(135deg, #024DDF, #0066FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    #app-container {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .panel {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f0f0f0;
+    }
+
+    #left-panel {
+      flex: 0 0 450px;
+      min-width: 400px;
+    }
+
+    #right-panel {
+      flex: 1;
+      min-width: 500px;
+    }
+
+    .panel-header {
+      padding: 24px 24px 16px 24px;
+      border-bottom: 2px solid #f0f0f0;
+      margin-bottom: 24px;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      color: #1a1a1a;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .panel-content {
+      padding: 0 24px 24px 24px;
+    }
+
+    /* Secciones principales */
+    .section {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title.info::before { content: "🎫"; }
+    .section-title.prices::before { content: "💰"; }
+    .section-title.venue::before { content: "🏢"; }
+
+    /* Formularios */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #024DDF;
+      box-shadow: 0 0 0 3px rgba(2, 77, 223, 0.1);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-col {
+      flex: 1;
+    }
+
+    .form-col-auto {
+      flex: 0 0 auto;
+    }
+
+    /* Botones */
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #024DDF;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0239c4;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(2, 77, 223, 0.3);
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Configuración de tabla */
+    .table-config {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      align-items: end;
+    }
+
+    .table-config .form-group {
+      margin-bottom: 0;
+    }
+
+           /* Editor de tabla */
+       .table-editor {
+         background: white;
+         border-radius: 8px;
+         padding: 20px;
+         border: 2px solid #e2e8f0;
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch;
+       }
+
+    .dynamic-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    .dynamic-table th,
+    .dynamic-table td {
+      border: 2px solid #e2e8f0;
+      padding: 12px;
+      text-align: center;
+      position: relative;
+    }
+
+    .dynamic-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+         .dynamic-table th.row-header {
+       background: #e2e8f0;
+       border-bottom: 1.7px solid #024DDF;
+     }
+
+    .dynamic-table input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 4px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .dynamic-table input:focus {
+      outline: 2px solid #024DDF;
+      outline-offset: -2px;
+      border-radius: 4px;
+    }
+
+    .cell-price {
+      font-weight: 600;
+      color: #024DDF;
+    }
+
+    /* Lista de precios por columna */
+    .column-prices {
+      margin-top: 24px;
+    }
+
+    .column-price-group {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .column-price-title {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .price-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .price-item {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .price-item input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    /* Subida de imagen */
+    .image-upload {
+      border: 2px dashed #e2e8f0;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      background: white;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .image-upload:hover {
+      border-color: #024DDF;
+      background: #f0f7ff;
+    }
+
+    .image-upload.has-image {
+      border-style: solid;
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    .upload-placeholder {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+
+           /* Vista previa */
+       #preview-area {
+         background-color: #f8fafc;
+         padding: 20px;
+         border-radius: 8px;
+         min-height: 300px;
+         border: 2px solid #e2e8f0;
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch;
+       }
+
+    .preview-header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .header-mobile-orbita {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .header-mobile-left {
+      text-align: left;
+      flex: 1;
+    }
+
+    .header-mobile-right {
+      text-align: right;
+      flex: 1;
+    }
+
+    .header-mobile-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .header-mobile-info {
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .preview-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .preview-info {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-table th,
+    .preview-table td {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .preview-table th {
+      background: #024DDF;
+      color: white;
+      font-weight: 600;
+    }
+
+         .preview-table th.row-header {
+       background: #f8fafc;
+       color: #1a1a1a;
+       border-bottom: 1.7px solid #024DDF;
+     }
+
+    .preview-price {
+      font-weight: 600;
+      color: #059669;
+    }
+
+    .preview-venue-image {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .preview-venue-image img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estado vacío */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #475569;
+    }
+
+    /* Modal para código */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #262626;
+      margin: 0;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      color: #4a5568;
+    }
+
+    .code-container {
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    .code-display {
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #4a5568;
+      white-space: pre-wrap;
+      background: #ffffff;
+      margin: 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+         /* Responsive */
+     @media (max-width: 1200px) {
+       #app-container {
+         flex-direction: column;
+       }
+       #left-panel {
+         flex: none;
+         min-width: auto;
+       }
+       #right-panel {
+         flex: none;
+         min-width: auto;
+       }
+     }
+
+     @media (max-width: 768px) {
+       .container {
+         padding: 15px;
+       }
+       
+       h1 {
+         font-size: 22px;
+         margin-bottom: 20px;
+       }
+       
+       .section {
+         padding: 16px;
+         margin-bottom: 16px;
+       }
+       
+       .form-row {
+         flex-direction: column;
+       }
+       
+       .table-config {
+         flex-direction: column;
+         align-items: stretch;
+       }
+       
+       /* Tabla mobile - versión mejorada */
+       .dynamic-table {
+         min-width: 500px;
+         font-size: 12px;
+         table-layout: fixed;
+         width: 500px;
+       }
+       
+       .dynamic-table th:first-child,
+       .dynamic-table td:first-child {
+         width: 120px;
+         min-width: 120px;
+       }
+       
+       .dynamic-table th:not(:first-child),
+       .dynamic-table td:not(:first-child) {
+         width: calc((500px - 120px) / var(--cols-count, 3));
+         min-width: 80px;
+       }
+       
+       .table-editor::after {
+         content: "← Desliza para ver más →";
+         display: block;
+         text-align: center;
+         font-size: 10px;
+         color: #64748b;
+         margin-top: 8px;
+         font-style: italic;
+       }
+       
+       .dynamic-table th,
+       .dynamic-table td {
+         padding: 10px 6px;
+         font-size: 11px;
+         vertical-align: middle;
+       }
+       
+       .dynamic-table th.row-header {
+         font-size: 10px;
+         font-weight: 700;
+         text-align: center;
+         padding: 10px 8px;
+       }
+       
+       .dynamic-table input {
+         font-size: 11px;
+         padding: 2px;
+       }
+       
+       /* Preview table mobile - mejorada distribución */
+       .preview-table {
+         font-size: 12px;
+         min-width: 500px;
+         table-layout: fixed;
+         width: 500px;
+       }
+       
+       .preview-table th:first-child,
+       .preview-table td:first-child {
+         width: 120px;
+         min-width: 120px;
+       }
+       
+       .preview-table th:not(:first-child),
+       .preview-table td:not(:first-child) {
+         width: calc((500px - 120px) / var(--cols-count, 3));
+         min-width: 80px;
+       }
+       
+       .preview-table + * {
+         position: relative;
+       }
+       
+       .preview-table + *::before {
+         content: "← Desliza la tabla para ver más →";
+         display: block;
+         text-align: center;
+         font-size: 10px;
+         color: #64748b;
+         margin: 8px 0;
+         font-style: italic;
+       }
+       
+       .preview-table th,
+       .preview-table td {
+         padding: 10px 6px;
+         font-size: 11px;
+         vertical-align: middle;
+         text-align: center;
+       }
+       
+       .preview-table th.row-header {
+         font-size: 10px;
+         font-weight: 700;
+         text-align: center;
+         padding: 10px 8px;
+       }
+       
+       /* Header mobile */
+       .preview-header {
+         display: none;
+       }
+       
+       .header-mobile-orbita {
+         display: flex;
+       }
+       
+       .preview-title {
+         font-size: 18px;
+       }
+       
+       .preview-info {
+         font-size: 12px;
+       }
+       
+       /* Column prices mobile */
+       .column-price-group {
+         padding: 12px;
+       }
+       
+       .column-price-title {
+         font-size: 14px;
+       }
+       
+       .price-item input {
+         font-size: 12px;
+         padding: 6px 8px;
+       }
+       
+       /* Image upload mobile */
+       .image-upload {
+         padding: 20px;
+       }
+       
+       .upload-placeholder {
+         font-size: 12px;
+       }
+       
+       /* Modal mobile */
+       .modal-content {
+         padding: 20px;
+         margin: 10px;
+       }
+       
+       .code-display {
+         font-size: 11px;
+         max-height: 300px;
+       }
+     }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CMS Tabla de Precios - Gestión de Eventos</h1>
+    
+    <div id="app-container">
+      <!-- Panel Izquierdo: Configuración -->
+      <div id="left-panel" class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Configuración del Evento</h2>
+        </div>
+        <div class="panel-content">
+          
+          <!-- Sección: Información General -->
+          <div class="section">
+            <h3 class="section-title info">Información General</h3>
+            <div class="form-group">
+              <label for="event-title">Título del Evento</label>
+              <input type="text" id="event-title" placeholder="Ej: Concierto Coldplay Lima 2024" value="">
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="event-date">Fecha del Evento</label>
+                  <input type="date" id="event-date" value="">
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="event-time">Hora</label>
+                  <input type="time" id="event-time" value="">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="event-location">Lugar del Evento</label>
+              <input type="text" id="event-location" placeholder="Ej: Estadio Nacional, Lima" value="">
+            </div>
+            <div class="form-group">
+              <label for="event-promoter">Promotor del Evento</label>
+              <input type="text" id="event-promoter" placeholder="Ej: Live Nation Perú" value="">
+            </div>
+            <button class="btn btn-success btn-full" onclick="saveEventInfo()">💾 Guardar Información</button>
+          </div>
+
+          <!-- Sección: Estructura de Precios -->
+          <div class="section">
+            <h3 class="section-title prices">Estructura de Precios</h3>
+            
+            <div class="table-config">
+              <div class="form-group">
+                <label for="table-rows">Sectores (Filas)</label>
+                <select id="table-rows" onchange="updateTable()">
+                  <option value="2">2 Sectores</option>
+                  <option value="3" selected>3 Sectores</option>
+                  <option value="4">4 Sectores</option>
+                  <option value="5">5 Sectores</option>
+                  <option value="6">6 Sectores</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="table-cols">Categorías (Columnas)</label>
+                <select id="table-cols" onchange="updateTable()">
+                  <option value="2">2 Categorías</option>
+                  <option value="3" selected>3 Categorías</option>
+                  <option value="4">4 Categorías</option>
+                  <option value="5">5 Categorías</option>
+                </select>
+              </div>
+              <div class="form-col-auto">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary" onclick="updateTable()">🔄 Actualizar</button>
+              </div>
+            </div>
+
+            <div class="table-editor">
+              <table class="dynamic-table" id="price-table">
+                <!-- Tabla generada dinámicamente -->
+              </table>
+            </div>
+
+            <div class="column-prices" id="column-prices">
+              <!-- Listas de precios por columna -->
+            </div>
+          </div>
+
+          <!-- Sección: Imagen del Venue -->
+          <div class="section">
+            <h3 class="section-title venue">Imagen del Venue</h3>
+            <div class="image-upload" id="image-upload" onclick="document.getElementById('venue-image').click()">
+              <input type="file" id="venue-image" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+              <div class="upload-placeholder" id="upload-placeholder">
+                📁 Haz clic para subir imagen del venue<br>
+                <small>Formatos: JPG, PNG, GIF (máx. 5MB)</small>
+              </div>
+              <img id="image-preview" class="image-preview" style="display: none;">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Previsualización -->
+      <div id="right-panel" class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Previsualización</h2>
+        </div>
+        <div class="panel-content">
+          <div id="preview-area">
+            <div class="empty-state">
+              <h3>Configura tu evento</h3>
+              <p>Completa la información del evento y estructura de precios para ver la previsualización</p>
+            </div>
+          </div>
+          
+          <button class="btn btn-secondary btn-full" style="margin-top: 20px;" onclick="showCode()">📋 Obtener Código HTML</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para mostrar el código -->
+  <div class="modal-overlay" id="code-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Código HTML/CSS de la Tabla</h2>
+        <button class="modal-close" onclick="closeCodeModal()">&times;</button>
+      </div>
+      
+      <div class="code-container">
+        <pre class="code-display" id="code-display"></pre>
+      </div>
+      
+      <button class="btn btn-primary" onclick="copyCode()">📋 Copiar Código</button>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    let eventData = {
+      title: '',
+      date: '',
+      time: '',
+      location: '',
+      promoter: '',
+      venueImage: null
+    };
+
+    let tableStructure = {
+      rows: 3,
+      cols: 3,
+      rowHeaders: ['Sector A', 'Sector B', 'Sector C'],
+      colHeaders: ['VIP', 'Preferencial', 'General'],
+      prices: {},
+      columnPrices: {}
+    };
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      updateTable();
+      updatePreview();
+    });
+
+    // Función para guardar información del evento
+    function saveEventInfo() {
+      eventData.title = document.getElementById('event-title').value;
+      eventData.date = document.getElementById('event-date').value;
+      eventData.time = document.getElementById('event-time').value;
+      eventData.location = document.getElementById('event-location').value;
+      eventData.promoter = document.getElementById('event-promoter').value;
+      
+      saveData();
+      updatePreview();
+      
+      // Feedback visual
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ Guardado';
+      btn.style.background = '#10b981';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+      }, 2000);
+    }
+
+    // Función para actualizar la tabla
+    function updateTable() {
+      const rows = parseInt(document.getElementById('table-rows').value);
+      const cols = parseInt(document.getElementById('table-cols').value);
+      
+      tableStructure.rows = rows;
+      tableStructure.cols = cols;
+      
+      // Actualizar headers si es necesario
+      const defaultRowHeaders = ['Sector A', 'Sector B', 'Sector C', 'Sector D', 'Sector E', 'Sector F'];
+      const defaultColHeaders = ['VIP', 'Preferencial', 'General', 'Popular', 'Económica'];
+      
+      tableStructure.rowHeaders = defaultRowHeaders.slice(0, rows);
+      tableStructure.colHeaders = defaultColHeaders.slice(0, cols);
+      
+      renderTable();
+      renderColumnPrices();
+      updatePreview();
+      saveData();
+    }
+
+    // Función para renderizar la tabla editable
+         function renderTable() {
+       const table = document.getElementById('price-table');
+       table.style.setProperty('--cols-count', tableStructure.cols);
+       let html = '<thead><tr><th class="row-header">Sector \\ Categoría</th>';
+      
+      // Headers de columnas
+      for (let i = 0; i < tableStructure.cols; i++) {
+        html += `<th><input type="text" value="${tableStructure.colHeaders[i]}" onchange="updateColHeader(${i}, this.value)" placeholder="Categoría ${i + 1}"></th>`;
+      }
+      html += '</tr></thead><tbody>';
+      
+      // Filas de datos
+      for (let i = 0; i < tableStructure.rows; i++) {
+        html += `<tr><th class="row-header"><input type="text" value="${tableStructure.rowHeaders[i]}" onchange="updateRowHeader(${i}, this.value)" placeholder="Sector ${i + 1}"></th>`;
+        
+        for (let j = 0; j < tableStructure.cols; j++) {
+          const cellKey = `${i}-${j}`;
+          const currentPrice = tableStructure.prices[cellKey] || '';
+          html += `<td><input type="text" class="cell-price" value="${currentPrice}" onchange="updatePrice(${i}, ${j}, this.value)" placeholder="S/ 0.00"></td>`;
+        }
+        html += '</tr>';
+      }
+      
+      html += '</tbody>';
+      table.innerHTML = html;
+    }
+
+    // Función para renderizar listas de precios por columna
+    function renderColumnPrices() {
+      const container = document.getElementById('column-prices');
+      let html = '';
+      
+      for (let i = 0; i < tableStructure.cols; i++) {
+        const colName = tableStructure.colHeaders[i];
+        const prices = tableStructure.columnPrices[i] || [''];
+        
+        html += `
+          <div class="column-price-group">
+            <div class="column-price-title">${colName} - Lista de Precios</div>
+            <div class="price-list" id="price-list-${i}">
+        `;
+        
+        prices.forEach((price, idx) => {
+          html += `
+            <div class="price-item">
+              <input type="text" value="${price}" onchange="updateColumnPrice(${i}, ${idx}, this.value)" placeholder="Ej: S/ 150.00 - Preventa">
+              <button class="btn btn-danger btn-sm" onclick="removeColumnPrice(${i}, ${idx})">🗑️</button>
+            </div>
+          `;
+        });
+        
+        html += `
+              <button class="btn btn-secondary btn-sm" onclick="addColumnPrice(${i})">+ Agregar Precio</button>
+            </div>
+          </div>
+        `;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    // Funciones de actualización
+    function updateColHeader(index, value) {
+      tableStructure.colHeaders[index] = value;
+      renderColumnPrices();
+      updatePreview();
+      saveData();
+    }
+
+    function updateRowHeader(index, value) {
+      tableStructure.rowHeaders[index] = value;
+      updatePreview();
+      saveData();
+    }
+
+    function updatePrice(row, col, value) {
+      const cellKey = `${row}-${col}`;
+      tableStructure.prices[cellKey] = value;
+      updatePreview();
+      saveData();
+    }
+
+    function updateColumnPrice(colIndex, priceIndex, value) {
+      if (!tableStructure.columnPrices[colIndex]) {
+        tableStructure.columnPrices[colIndex] = [];
+      }
+      tableStructure.columnPrices[colIndex][priceIndex] = value;
+      saveData();
+    }
+
+    function addColumnPrice(colIndex) {
+      if (!tableStructure.columnPrices[colIndex]) {
+        tableStructure.columnPrices[colIndex] = [];
+      }
+      tableStructure.columnPrices[colIndex].push('');
+      renderColumnPrices();
+    }
+
+    function removeColumnPrice(colIndex, priceIndex) {
+      if (tableStructure.columnPrices[colIndex]) {
+        tableStructure.columnPrices[colIndex].splice(priceIndex, 1);
+        renderColumnPrices();
+        saveData();
+      }
+    }
+
+    // Función para manejar subida de imagen
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert('La imagen es demasiado grande. Máximo 5MB.');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          eventData.venueImage = e.target.result;
+          
+          const preview = document.getElementById('image-preview');
+          const placeholder = document.getElementById('upload-placeholder');
+          const upload = document.getElementById('image-upload');
+          
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          placeholder.style.display = 'none';
+          upload.classList.add('has-image');
+          
+          saveData();
+          updatePreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Función para actualizar previsualización
+    function updatePreview() {
+      const previewArea = document.getElementById('preview-area');
+      
+      if (!eventData.title && !eventData.date && !eventData.location) {
+        previewArea.innerHTML = `
+          <div class="empty-state">
+            <h3>Configura tu evento</h3>
+            <p>Completa la información del evento y estructura de precios para ver la previsualización</p>
+          </div>
+        `;
+        return;
+      }
+      
+           let html = `
+       <div class="preview-header">
+         <div class="preview-title">${eventData.title || 'Título del Evento'}</div>
+         <div class="preview-info">📅 ${formatDate(eventData.date)} ${eventData.time ? `• ${eventData.time}` : ''}</div>
+         <div class="preview-info">📍 ${eventData.location || 'Lugar del evento'}</div>
+         <div class="preview-info">🎬 ${eventData.promoter || 'Promotor del evento'}</div>
+       </div>
+       
+       <div class="header-mobile-orbita">
+         <div class="header-mobile-left">
+           <div class="header-mobile-title">${eventData.title || 'Título del Evento'}</div>
+           <div class="header-mobile-info">📅 ${formatDate(eventData.date).substring(0, 20)}${eventData.time ? ` • ${eventData.time}` : ''}</div>
+           <div class="header-mobile-info">📍 ${eventData.location || 'Lugar del evento'}</div>
+         </div>
+         <div class="header-mobile-right">
+           <div class="header-mobile-info" style="font-weight: 600;">🎬 ${eventData.promoter || 'Promotor'}</div>
+         </div>
+       </div>
+     `;
+      
+             // Tabla de precios
+       if (tableStructure.rowHeaders.length > 0 && tableStructure.colHeaders.length > 0) {
+         html += `<table class="preview-table" style="--cols-count: ${tableStructure.cols}"><thead><tr><th class="row-header">Sectores</th>`;
+        
+        tableStructure.colHeaders.forEach(header => {
+          html += `<th>${header}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+        
+        for (let i = 0; i < tableStructure.rows; i++) {
+          html += `<tr><th class="row-header">${tableStructure.rowHeaders[i]}</th>`;
+          
+          for (let j = 0; j < tableStructure.cols; j++) {
+            const cellKey = `${i}-${j}`;
+            const price = tableStructure.prices[cellKey] || '---';
+            html += `<td><span class="preview-price">${price}</span></td>`;
+          }
+          html += '</tr>';
+        }
+        html += '</tbody></table>';
+        
+        // Lista de precios por categoría
+        html += '<div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">';
+        for (let i = 0; i < tableStructure.cols; i++) {
+          const colName = tableStructure.colHeaders[i];
+          const prices = tableStructure.columnPrices[i] || [];
+          
+          if (prices.length > 0 && prices[0]) {
+            html += `
+              <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h4 style="color: #024DDF; margin-bottom: 8px; font-size: 14px;">${colName}</h4>
+                <ul style="list-style: none; font-size: 13px; line-height: 1.5;">
+            `;
+            
+            prices.forEach(price => {
+              if (price.trim()) {
+                html += `<li>• ${price}</li>`;
+              }
+            });
+            
+            html += '</ul></div>';
+          }
+        }
+        html += '</div>';
+      }
+      
+      // Imagen del venue
+      if (eventData.venueImage) {
+        html += `
+          <div class="preview-venue-image">
+            <h4 style="margin-bottom: 16px; color: #1a1a1a;">Imagen del Venue</h4>
+            <img src="${eventData.venueImage}" alt="Venue" />
+          </div>
+        `;
+      }
+      
+      previewArea.innerHTML = html;
+    }
+
+    // Función para mostrar código
+    function showCode() {
+      const html = generateFinalHTML();
+      document.getElementById('code-display').textContent = html;
+      document.getElementById('code-modal').style.display = 'flex';
+    }
+
+    function closeCodeModal() {
+      document.getElementById('code-modal').style.display = 'none';
+    }
+
+    function copyCode() {
+      const code = document.getElementById('code-display').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ Copiado';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      });
+    }
+
+    // Función para generar HTML final
+    function generateFinalHTML() {
+      return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${eventData.title || 'Tabla de Precios del Evento'}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      background: #f8fafc;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .event-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+           .event-header {
+         background: linear-gradient(135deg, #024DDF, #0066FF);
+         color: white;
+         padding: 40px;
+         text-align: center;
+       }
+
+       .event-header-mobile {
+         display: none;
+         background: linear-gradient(135deg, #024DDF, #0066FF);
+         color: white;
+         padding: 16px 20px;
+         justify-content: space-between;
+         align-items: flex-start;
+       }
+
+       .event-header-left,
+       .event-header-right {
+         flex: 1;
+       }
+
+       .event-header-left {
+         text-align: left;
+       }
+
+       .event-header-right {
+         text-align: right;
+       }
+
+       .event-title-mobile {
+         font-size: 16px;
+         font-weight: 700;
+         margin-bottom: 4px;
+         line-height: 1.2;
+       }
+
+       .event-info-mobile {
+         font-size: 12px;
+         opacity: 0.9;
+         line-height: 1.3;
+       }
+    
+    .event-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .event-info {
+      font-size: 16px;
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+    
+           .prices-section {
+         padding: 40px;
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch;
+       }
+    
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .price-table th,
+    .price-table td {
+      padding: 16px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .price-table th {
+      background: #024DDF;
+      color: white;
+      font-weight: 600;
+    }
+    
+         .price-table th.row-header {
+       background: #f8fafc;
+       color: #1a1a1a;
+       border-bottom: 1.7px solid #024DDF;
+     }
+    
+    .price-table td {
+      background: white;
+      font-weight: 600;
+      color: #059669;
+      font-size: 16px;
+    }
+    
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .category-card {
+      background: #f8fafc;
+      padding: 24px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .category-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #024DDF;
+      margin-bottom: 16px;
+    }
+    
+    .price-list {
+      list-style: none;
+    }
+    
+    .price-list li {
+      padding: 4px 0;
+      font-size: 14px;
+      color: #4a5568;
+    }
+    
+    .venue-section {
+      text-align: center;
+      border-top: 2px solid #e2e8f0;
+      padding-top: 40px;
+    }
+    
+    .venue-image {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+         @media (max-width: 768px) {
+       body {
+         padding: 10px;
+       }
+       
+       .event-header {
+         display: none;
+       }
+       
+       .event-header-mobile {
+         display: flex;
+       }
+       
+       .event-title {
+         font-size: 20px;
+         line-height: 1.2;
+       }
+       
+       .event-info {
+         font-size: 14px;
+       }
+       
+       .prices-section {
+         padding: 20px 16px;
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch;
+       }
+       
+       .section-title {
+         font-size: 20px;
+       }
+       
+       /* Tabla mobile optimizada */
+       .price-table {
+         font-size: 12px;
+         margin-bottom: 24px;
+         min-width: 500px;
+         table-layout: fixed;
+         width: 500px;
+       }
+       
+       .price-table th:first-child,
+       .price-table td:first-child {
+         width: 120px;
+         min-width: 120px;
+       }
+       
+       .price-table th:not(:first-child),
+       .price-table td:not(:first-child) {
+         width: calc((500px - 120px) / var(--cols-count, 3));
+         min-width: 80px;
+       }
+       
+       .prices-section::after {
+         content: "← Desliza la tabla para ver todas las categorías →";
+         display: block;
+         text-align: center;
+         font-size: 10px;
+         color: #64748b;
+         margin: 8px 0;
+         font-style: italic;
+       }
+       
+       .price-table th,
+       .price-table td {
+         padding: 10px 6px;
+         font-size: 11px;
+         line-height: 1.2;
+         vertical-align: middle;
+         text-align: center;
+       }
+       
+       .price-table th {
+         font-size: 10px;
+         font-weight: 700;
+       }
+       
+       .price-table th.row-header {
+         font-size: 10px;
+         font-weight: 700;
+         text-align: center;
+         padding: 10px 8px;
+       }
+       
+       .price-table td {
+         font-size: 12px;
+         font-weight: 600;
+       }
+       
+       .categories-grid {
+         grid-template-columns: 1fr;
+         gap: 12px;
+         margin-bottom: 24px;
+       }
+       
+       .category-card {
+         padding: 16px;
+       }
+       
+       .category-title {
+         font-size: 16px;
+       }
+       
+       .price-list li {
+         font-size: 13px;
+       }
+       
+       .venue-section {
+         padding-top: 24px;
+       }
+       
+       .venue-image {
+         max-height: 250px;
+       }
+     }
+  </style>
+</head>
+<body>
+     <div class="event-container">
+     <div class="event-header">
+       <h1 class="event-title">${eventData.title || 'Título del Evento'}</h1>
+       <div class="event-info">📅 ${formatDate(eventData.date)} ${eventData.time ? `• ${eventData.time}` : ''}</div>
+       <div class="event-info">📍 ${eventData.location || 'Lugar del evento'}</div>
+       <div class="event-info">🎬 ${eventData.promoter || 'Promotor del evento'}</div>
+     </div>
+     
+     <div class="event-header-mobile">
+       <div class="event-header-left">
+         <div class="event-title-mobile">${eventData.title || 'Título del Evento'}</div>
+         <div class="event-info-mobile">📅 ${formatDate(eventData.date).substring(0, 20)}${eventData.time ? ` • ${eventData.time}` : ''}</div>
+         <div class="event-info-mobile">📍 ${eventData.location || 'Lugar del evento'}</div>
+       </div>
+       <div class="event-header-right">
+         <div class="event-info-mobile" style="font-weight: 600;">🎬 ${eventData.promoter || 'Promotor'}</div>
+       </div>
+     </div>
+    
+    <div class="prices-section">
+      <h2 class="section-title">Tabla de Precios</h2>
+      
+             <table class="price-table" style="--cols-count: ${tableStructure.cols}">
+         <thead>
+           <tr>
+             <th class="row-header">Sectores</th>
+             ${tableStructure.colHeaders.map(header => `<th>${header}</th>`).join('')}
+           </tr>
+         </thead>
+        <tbody>
+          ${tableStructure.rowHeaders.map((rowHeader, i) => `
+            <tr>
+              <th class="row-header">${rowHeader}</th>
+              ${tableStructure.colHeaders.map((_, j) => {
+                const cellKey = `${i}-${j}`;
+                const price = tableStructure.prices[cellKey] || '---';
+                return `<td>${price}</td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      
+      ${generateCategoriesHTML()}
+      
+      ${eventData.venueImage ? `
+        <div class="venue-section">
+          <h3 class="section-title">Imagen del Venue</h3>
+          <img src="${eventData.venueImage}" alt="Venue" class="venue-image" />
+        </div>
+      ` : ''}
+    </div>
+  </div>
+</body>
+</html>`;
+    }
+
+    function generateCategoriesHTML() {
+      let hasCategories = false;
+      let html = '<div class="categories-grid">';
+      
+      for (let i = 0; i < tableStructure.cols; i++) {
+        const colName = tableStructure.colHeaders[i];
+        const prices = tableStructure.columnPrices[i] || [];
+        const validPrices = prices.filter(p => p && p.trim());
+        
+        if (validPrices.length > 0) {
+          hasCategories = true;
+          html += `
+            <div class="category-card">
+              <h3 class="category-title">${colName}</h3>
+              <ul class="price-list">
+                ${validPrices.map(price => `<li>• ${price}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+        }
+      }
+      
+      html += '</div>';
+      
+      return hasCategories ? html : '';
+    }
+
+    // Funciones de utilidad
+    function formatDate(dateString) {
+      if (!dateString) return 'Fecha por definir';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    function saveData() {
+      const data = {
+        eventData,
+        tableStructure
+      };
+      localStorage.setItem('cms-price-table', JSON.stringify(data));
+    }
+
+    function loadData() {
+      const saved = localStorage.getItem('cms-price-table');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          eventData = { ...eventData, ...data.eventData };
+          tableStructure = { ...tableStructure, ...data.tableStructure };
+          
+          // Actualizar formularios
+          document.getElementById('event-title').value = eventData.title || '';
+          document.getElementById('event-date').value = eventData.date || '';
+          document.getElementById('event-time').value = eventData.time || '';
+          document.getElementById('event-location').value = eventData.location || '';
+          document.getElementById('event-promoter').value = eventData.promoter || '';
+          document.getElementById('table-rows').value = tableStructure.rows;
+          document.getElementById('table-cols').value = tableStructure.cols;
+          
+          // Restaurar imagen si existe
+          if (eventData.venueImage) {
+            const preview = document.getElementById('image-preview');
+            const placeholder = document.getElementById('upload-placeholder');
+            const upload = document.getElementById('image-upload');
+            
+            preview.src = eventData.venueImage;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+            upload.classList.add('has-image');
+          }
+        } catch (e) {
+          console.error('Error loading saved data:', e);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

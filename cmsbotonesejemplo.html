@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Botones de Venta - Gestión Múltiple</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #262626;
+      background: linear-gradient(135deg, #024DDF, #0066FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    #app-container {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .panel {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f0f0f0;
+    }
+
+    #left-panel {
+      flex: 0 0 400px;
+      min-width: 350px;
+    }
+
+    #right-panel {
+      flex: 1;
+      min-width: 500px;
+    }
+
+    .panel-header {
+      padding: 24px 24px 16px 24px;
+      border-bottom: 2px solid #f0f0f0;
+      margin-bottom: 24px;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      color: #1a1a1a;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .panel-content {
+      padding: 0 24px 24px 24px;
+    }
+
+    /* Event Details Section */
+    .event-details-section {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 30px;
+    
+    }
+
+    .event-form-row {
+      display: flex;
+      gap: 20px; 
+      margin-bottom: 0px; 
+    }
+
+    .event-form-col {
+      flex: 1;
+    }
+
+    .event-form-col-button {
+      flex: 0 0 auto;
+      margin-left: 12px;
+    }
+
+    .event-form-col .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+    }
+
+    .event-form-col-button {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .event-form-col-button label {
+      font-weight: 600;
+      color: transparent;
+      font-size: 14px;
+      user-select: none;
+    }
+
+    .event-form-col .form-group label {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 14px;
+    }
+
+    .event-form-col .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    .event-form-col .form-group input:focus {
+      outline: none;
+      border-color: #024DDF;
+      box-shadow: 0 0 0 3px rgba(2, 77, 223, 0.1);
+    }
+
+    @media (max-width: 600px) {
+      .event-form-row {
+        flex-direction: column;
+      gap: 16px;
+      }
+
+      .event-form-col-button {
+        margin-left: 0;
+      }
+
+      .event-form-col-button label {
+        display: none;
+      }
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: "🎫";
+      font-size: 18px;
+    }
+
+    .btn-save-event {
+      width: 100%;
+      padding: 12px 24px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-save-event:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .event-preview {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .event-preview h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 8px 0;
+      text-transform: none;
+      letter-spacing: 0.5px;
+    }
+
+    .event-preview .event-date {
+      font-size: 18px;
+      font-weight: 600;
+      color: #024DDF;
+      margin: 0;
+    }
+
+    #add-new-button {
+      width: 100%;
+      padding: 16px 24px;
+      background: #024DDF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 24px;
+      transition: all 0.2s ease;
+    }
+
+    #add-new-button:hover {
+      background: #0239c4;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(2, 77, 223, 0.3);
+    }
+
+    #button-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .button-item {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .button-item:hover {
+      border-color: #024DDF;
+      background: #f0f7ff;
+    }
+
+    .button-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .button-item-info {
+      flex: 1;
+    }
+
+    .button-item-title {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-size: 16px;
+      margin: 0 0 8px 0;
+    }
+
+    .button-item-status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-available { background: #e6fffa; color: #048851; }
+    .status-soon { background: #f7fafc; color: #646464; }
+    .status-soldout { background: #fed7d7; color: #DD2C00; }
+    .status-canceled { background: #f7fafc; color: #646464; }
+
+    .button-item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-edit, .btn-delete {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+      background: #e2e8f0;
+      color: #4a5568;
+    }
+
+    .btn-edit:hover {
+      background: #cbd5e0;
+    }
+
+    .btn-delete {
+      background: #fed7d7;
+      color: #DD2C00;
+    }
+
+    .btn-delete:hover {
+      background: #feb2b2;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #262626;
+      margin: 0;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      color: #4a5568;
+    }
+
+    .form-group {
+      margin-bottom: 0px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-size: 14px;
+    }
+
+    .form-group select,
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus {
+      outline: none;
+      border-color: #024DDF;
+      box-shadow: 0 0 0 3px rgba(2, 77, 223, 0.1);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-col {
+      flex: 1;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-save, .btn-cancel, .btn-show-code {
+      flex: 1;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-save {
+      background: #024DDF;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #0239c4;
+    }
+
+    .btn-cancel {
+      background: #f8fafc;
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn-cancel:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-show-code {
+      background: #10b981;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .btn-show-code:hover {
+      background: #059669;
+    }
+
+    .view-controls {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .view-toggle {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .view-toggle-btn {
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      color: #64748b;
+      transition: all 0.2s ease;
+      min-width: 100px;
+    }
+
+    .view-toggle-btn:hover {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .view-toggle-btn.active {
+      background: #024DDF;
+      color: white;
+    }
+
+    #preview-area {
+      background-color: #e2e2e2;
+      padding: 20px;
+      border-radius: 8px;
+      min-height: 200px;
+    }
+
+    #show-code-button {
+      width: 100%;
+      padding: 16px 24px;
+      background: #f8fafc;
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s ease;
+    }
+
+    #show-code-button:hover {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #475569;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .code-container {
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    .code-display {
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #4a5568;
+      white-space: pre-wrap;
+      background: #ffffff;
+      margin: 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .copy-btn {
+      background: #024DDF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: #0239c4;
+    }
+
+    @media (max-width: 1200px) {
+      #app-container {
+      flex-direction: column;
+      }
+      #left-panel {
+        flex: none;
+        min-width: auto;
+      }
+      #right-panel {
+        flex: none;
+        min-width: auto;
+      }
+    }
+
+    .tmpe-container * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .tmpe-container {
+      width: 800px !important;
+      max-width: 800px !important;
+      margin: 0 auto !important;
+      background: #FAFBFC;
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    @media (max-width: 800px) {
+      .tmpe-container {
+        width: 100% !important;
+      }
+    }
+
+    .tmpe-desktop-view {
+      display: block;
+    }
+
+    .tmpe-mobile-view {
+      display: none;
+    }
+
+    .tmpe-event-header {
+      background: #fff;
+      padding: 12px 0px;
+      border-bottom: 1px solid #D6D6D6;
+      text-align: center;
+      width: 800px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .tmpe-event-title-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tmpe-event-title-line {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .tmpe-evento-en-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tmpe-evento-en-container::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #121212;
+    }
+
+    .tmpe-evento-en-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #121212;
+      text-transform: uppercase;
+      letter-spacing: 2%;
+      line-height: 1.2em;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .tmpe-location-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #646464;
+      letter-spacing: 2%;
+      line-height: 1.2em;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      text-transform: uppercase;
+    }
+
+    .tmpe-date-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+
+    .tmpe-calendar-icon-desktop {
+      width: 16px;
+      height: 16px;
+    }
+
+    .tmpe-calendar-icon-mobile {
+      width: 14px;
+      height: 14px;
+    }
+
+    .tmpe-date-text-header {
+      font-size: 18px;
+      font-weight: 600;
+      color: #646464;
+      margin: 0;
+      text-align: left;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .tmpe-container .tmpe-event-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #121212;
+      margin: 0 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tmpe-container .tmpe-event-date {
+      font-size: 14px;
+      font-weight: 600;
+      color: #646464;
+      margin: 0;
+    }
+
+    .tmpe-ticket-item {
+      display: flex;
+      align-items: center;
+      padding: 20px 24px;
+      background: #fff;
+      border-bottom: 1px solid #D6D6D6;
+      position: relative;
+      justify-content: space-between;
+      gap: 24px;
+      transition: background-color 0.2s ease;
+    }
+
+    .tmpe-logo-container {
+      width: 56px;
+      height: 56px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tmpe-logo-interbank {
+      background: #1A1A1A;
+    }
+
+    .tmpe-logo-ticketmaster {
+      background: #0744BD;
+    }
+
+    .tmpe-logo-custom {
+      background: #000000;
+    }
+
+    .tmpe-logo-img {
+      width: 65%;
+      height: 65%;
+      object-fit: contain;
+    }
+
+    .tmpe-info-container {
+      flex: 1;
+    }
+
+    .tmpe-container .tmpe-ticket-title {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #262626;
+      letter-spacing: 0.4px;
+      line-height: 20px;
+    }
+
+    .tmpe-container .tmpe-date-text {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #7D7D7D;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.32px;
+      line-height: 20px;
+    }
+
+    .tmpe-status-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tmpe-container .tmpe-status-badge {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #D6D6D6;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      height: 22px;
+      letter-spacing: 0.24px;
+      line-height: 20px;
+    }
+
+    .tmpe-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .tmpe-dot-available {
+      background: #048851;
+    }
+
+    .tmpe-dot-soon {
+      background: #646464;
+    }
+    
+    .tmpe-dot-soldout {
+      background: #DD2C00;
+    }
+    
+    .tmpe-dot-canceled {
+      background: #646464;
+    }
+
+    .tmpe-container .tmpe-link-details {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #024DDF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 16px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-left: auto;
+      text-decoration: none;
+      letter-spacing: 0.32px;
+      line-height: 24px;
+      height: 48px;
+      min-width: 150px;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .tmpe-link-reminder {
+      background: #FFFFFF;
+      color: #646464;
+      border: 1px solid #D6D6D6;
+      border-radius: 23px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      margin-left: auto;
+      text-decoration: none;
+      box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.06);
+      height: 39px;
+      min-width: auto;
+      justify-content: center;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .tmpe-link-mobile {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #024DDF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    @media (max-width: 768px) {
+      .tmpe-desktop-view {
+        display: none;
+      }
+
+      .tmpe-mobile-view {
+        display: block;
+        box-shadow: 0px 1px 4px 0px rgba(18, 18, 18, 0.15);
+      }
+
+      .tmpe-event-header {
+        padding: 12px 0px;
+        width: 380px;
+        max-width: 380px;
+      }
+
+      .tmpe-evento-en-container::before {
+        top: -3px;
+        height: 1.5px;
+      }
+
+      .tmpe-evento-en-text {
+        font-size: 14px;
+      }
+
+      .tmpe-location-text {
+        font-size: 14px;
+      }
+
+      .tmpe-date-text-header {
+        font-size: 14px;
+      }
+
+      .tmpe-container .tmpe-event-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #121212;
+        margin: 0 0 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .tmpe-container .tmpe-event-date {
+      font-size: 14px;
+        font-weight: 600;
+        color: #646464;
+        margin: 0;
+      }
+
+      .tmpe-ticket-item {
+      padding: 0;
+      gap: 0;
+      align-items: stretch;
+    }
+    
+    .tmpe-ticket-link {
+      display: flex;
+      width: 100%;
+      padding: 20px 12px;
+      gap: 16px;
+      align-items: flex-start;
+      text-decoration: none !important;
+      color: inherit;
+      cursor: pointer;
+    }
+
+      .tmpe-logo-container {
+      width: 42px;
+      height: 40px;
+      margin-right: 0;
+      border-radius: 2.68px;
+      margin-top: 0;
+      align-self: flex-start;
+    }
+
+      .tmpe-container .tmpe-ticket-title {
+        font-size: 18px;
+      line-height: 20px;
+      letter-spacing: 0.32px;
+      color: #121212;
+      margin-bottom: 2px;
+    }
+    
+      .tmpe-container .tmpe-date-text {
+      font-size: 14px;
+      margin-left: 0;
+      line-height: 20px;
+      letter-spacing: 0.28px;
+      color: #828282;
+    }
+
+      .tmpe-status-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+      .tmpe-container .tmpe-status-badge {
+      font-size: 12px;
+      letter-spacing: 0.24px;
+      line-height: 20px;
+      color: #121212;
+    }
+    
+    .tmpe-link-mobile {
+      width: 36px;
+      height: 36px;
+      background: #024DDF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      margin-top: 0;
+    }
+    }
+
+    @media (min-width: 769px) {
+      .tmpe-ticket-item:hover {
+        background-color: #F6F6F6;
+      }
+
+      .tmpe-link-details:hover {
+        background-color: #0035A0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .tmpe-ticket-link:hover,
+      .tmpe-ticket-link:active {
+        background-color: #F6F6F6;
+      }
+
+      .tmpe-ticket-link:hover .tmpe-link-mobile,
+      .tmpe-ticket-link:active .tmpe-link-mobile {
+        background-color: #0035A0;
+      }
+    }
+
+    .event-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .event-form .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      height: 46px;
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover {
+      background: #e8e8e8;
+      color: #555;
+      border-color: #ccc;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CMS Botones de Venta - Gestión Múltiple</h1>
+    
+    <!-- Detalles Globales del Evento -->
+    <div class="event-details-section">
+      <h3 class="section-title">Detalles del Evento</h3>
+      <div class="event-form-row">
+        <div class="event-form-col">
+          <div class="form-group">
+            <label for="event-name">Ubicación del Evento</label>
+            <input type="text" id="event-name" placeholder="sao paulo, estadio morimbus" value="">
+          </div>
+        </div>
+        <div class="event-form-col">
+          <div class="form-group">
+            <label for="event-date">Fecha del Evento</label>
+            <input type="date" id="event-date" value="">
+          </div>
+        </div>
+        <div class="event-form-col-button">
+          <label>&nbsp;</label>
+          <button id="save-event-details" class="btn-secondary">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="app-container">
+      <!-- Panel Izquierdo: Gestión de Botones -->
+      <div id="left-panel" class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Gestión de Botones</h2>
+        </div>
+        <div class="panel-content">
+          <button id="add-new-button">+ Agregar Nuevo Botón</button>
+          <div id="button-list-container"></div>
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Previsualización Global -->
+      <div id="right-panel" class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Previsualización Global</h2>
+        </div>
+        <div class="panel-content">
+          <div class="view-controls">
+            <div class="view-toggle">
+              <button class="view-toggle-btn active" id="desktop-view-btn">Desktop</button>
+              <button class="view-toggle-btn" id="mobile-view-btn">Mobile</button>
+            </div>
+          </div>
+          
+          <div id="preview-area">
+            <div class="empty-state">
+              <h3>No hay botones creados</h3>
+              <p>Agrega tu primer botón usando el panel de la izquierda</p>
+            </div>
+          </div>
+            
+          <button id="show-code-button">📋 Mostrar Código de Todos los Botones</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear/editar botón -->
+  <div class="modal-overlay" id="button-editor-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="form-title">Crear Nuevo Botón</h2>
+        <button class="modal-close" id="close-button-modal">&times;</button>
+      </div>
+      
+      <form id="button-editor-form">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="button-type">Tipo de Venta</label>
+              <select id="button-type" required>
+                <option value="">Seleccionar tipo</option>
+                  <option value="interbank">Venta Interbank</option>
+                  <option value="ticketmaster">Venta General</option>
+                  <option value="custom">Venta Personalizada</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="button-status">Estado</label>
+              <select id="button-status" required>
+                <option value="">Seleccionar estado</option>
+                  <option value="available">Disponible</option>
+                  <option value="soon">Próximamente</option>
+                  <option value="soldout">Agotado</option>
+                  <option value="canceled">Cancelado</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="button-title">Título</label>
+              <input type="text" id="button-title" placeholder="VENTA INTERBANK" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="sale-date">Inicio de Venta</label>
+              <input type="text" id="sale-date" placeholder="Desde 01/04 • 14:30" required>
+              </div>
+            </div>
+          </div>
+          
+        <div class="form-group" id="custom-logo-group" style="display: none;">
+          <label for="custom-logo-url">URL del Logo Personalizado</label>
+          <input type="url" id="custom-logo-url" placeholder="https://ejemplo.com/logo.png">
+        </div>
+        
+              <div class="form-group">
+                <label for="button-text">Texto del Botón</label>
+          <input type="text" id="button-text" placeholder="Ver Detalles" value="Ver Detalles" required>
+          </div>
+          
+              <div class="form-group">
+                <label for="button-link">Link de Redirección</label>
+          <input type="url" id="button-link" placeholder="https://ejemplo.com/comprar" required>
+          </div>
+          
+        <div class="form-actions">
+          <button type="submit" id="save-button" class="btn-save">Guardar</button>
+          <button type="button" id="cancel-button" class="btn-cancel">Cancelar</button>
+            </div>
+      </form>
+            </div>
+          </div>
+          
+  <!-- Modal para mostrar el código -->
+  <div class="modal-overlay" id="code-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Código HTML/CSS Completo</h2>
+        <button class="modal-close" id="close-modal">&times;</button>
+          </div>
+      
+      <div class="code-container">
+        <pre class="code-display" id="code-display"></pre>
+      </div>
+      
+      <button class="copy-btn" id="copy-code">📋 Copiar Código</button>
+        </div>
+      </div>
+
+  <script>
+    // Variables globales
+    let buttons = [];
+    let editingButtonId = null;
+    let currentView = 'desktop';
+    let eventDetails = {
+      name: 'sao paulo, estadio morimbus',
+      date: '2025-11-15'
+    };
+
+    // Elementos del DOM
+    const addNewButton = document.getElementById('add-new-button');
+    const buttonListContainer = document.getElementById('button-list-container');
+    const buttonEditorModal = document.getElementById('button-editor-modal');
+    const buttonEditorForm = document.getElementById('button-editor-form');
+    const formTitle = document.getElementById('form-title');
+    const closeButtonModal = document.getElementById('close-button-modal');
+    const previewArea = document.getElementById('preview-area');
+    const showCodeButton = document.getElementById('show-code-button');
+    const codeModal = document.getElementById('code-modal');
+    const closeModal = document.getElementById('close-modal');
+    const codeDisplay = document.getElementById('code-display');
+    const copyCodeButton = document.getElementById('copy-code');
+
+    // Elementos de detalles del evento
+    const eventNameInput = document.getElementById('event-name');
+    const eventDateInput = document.getElementById('event-date');
+    const saveEventDetailsButton = document.getElementById('save-event-details');
+    const previewEventName = document.getElementById('preview-event-name');
+    const previewEventDate = document.getElementById('preview-event-date');
+
+    // Elementos del formulario
+    const buttonType = document.getElementById('button-type');
+    const buttonStatus = document.getElementById('button-status');
+    const buttonTitle = document.getElementById('button-title');
+    const saleDate = document.getElementById('sale-date');
+    const buttonText = document.getElementById('button-text');
+    const buttonLink = document.getElementById('button-link');
+    const customLogoUrl = document.getElementById('custom-logo-url');
+    const customLogoGroup = document.getElementById('custom-logo-group');
+
+    // Elementos de vista
+    const desktopViewBtn = document.getElementById('desktop-view-btn');
+    const mobileViewBtn = document.getElementById('mobile-view-btn');
+
+    // Configuración de estados
+    const statusConfig = {
+      available: { text: 'DISPONIBLE', class: 'status-available' },
+      soon: { text: 'PRÓXIMAMENTE', class: 'status-soon' },
+      soldout: { text: 'AGOTADO', class: 'status-soldout' },
+      canceled: { text: 'CANCELADO', class: 'status-canceled' }
+    };
+
+    // Funciones principales
+    function loadButtons() {
+      const saved = localStorage.getItem('cms-buttons');
+      if (saved) {
+        try {
+          buttons = JSON.parse(saved);
+        } catch (e) {
+          buttons = [];
+        }
+      }
+    }
+
+    function saveButtons() {
+      localStorage.setItem('cms-buttons', JSON.stringify(buttons));
+    }
+
+    function renderButtonList() {
+      buttonListContainer.innerHTML = '';
+      
+      if (buttons.length === 0) {
+        buttonListContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>No hay botones creados</h3>
+            <p>Haz clic en "Agregar Nuevo Botón" para comenzar</p>
+            </div>
+        `;
+        return;
+      }
+
+      buttons.forEach(button => {
+        const buttonItem = document.createElement('div');
+        buttonItem.className = 'button-item';
+        buttonItem.innerHTML = `
+          <div class="button-item-header">
+            <div class="button-item-info">
+              <h4 class="button-item-title">${button.title}</h4>
+              <span class="button-item-status ${statusConfig[button.status].class}">
+                ${statusConfig[button.status].text}
+              </span>
+                </div>
+            <div class="button-item-actions">
+              <button class="btn-edit" data-id="${button.id}">✏️ Editar</button>
+              <button class="btn-delete" data-id="${button.id}">🗑️ Eliminar</button>
+                    </div>
+                  </div>
+        `;
+        
+        buttonListContainer.appendChild(buttonItem);
+      });
+
+      // Event listeners para botones de acción
+      document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const buttonId = e.target.getAttribute('data-id');
+          openButtonEditor(buttonId);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const buttonId = e.target.getAttribute('data-id');
+          deleteButton(buttonId);
+        });
+      });
+    }
+
+    function openButtonEditor(buttonId = null) {
+      editingButtonId = buttonId;
+      buttonEditorModal.style.display = 'flex';
+
+      if (buttonId) {
+        const button = buttons.find(b => b.id === buttonId);
+        if (button) {
+          formTitle.textContent = `Editar: ${button.title}`;
+          buttonType.value = button.type;
+          buttonStatus.value = button.status;
+          buttonTitle.value = button.title;
+          saleDate.value = button.date;
+          buttonText.value = button.buttonText;
+          buttonLink.value = button.link;
+          
+          if (button.type === 'custom' && button.customLogoUrl) {
+            customLogoUrl.value = button.customLogoUrl;
+          }
+          
+          handleTypeChange();
+        }
+      } else {
+        formTitle.textContent = 'Crear Nuevo Botón';
+        buttonType.value = '';
+        buttonStatus.value = '';
+        buttonTitle.value = '';
+        saleDate.value = '';
+        buttonText.value = 'Ver Detalles';
+        buttonLink.value = '';
+        customLogoUrl.value = '';
+        customLogoGroup.style.display = 'none';
+        customLogoUrl.required = false;
+      }
+    }
+
+    function closeButtonEditor() {
+      buttonEditorModal.style.display = 'none';
+      editingButtonId = null;
+    }
+
+    function handleTypeChange() {
+      const type = buttonType.value;
+      
+        if (type === 'custom') {
+        customLogoGroup.style.display = 'block';
+        customLogoUrl.required = true;
+        } else {
+        customLogoGroup.style.display = 'none';
+        customLogoUrl.required = false;
+        customLogoUrl.value = '';
+      }
+      
+      const currentTitle = buttonTitle.value.toUpperCase();
+      const isDefaultTitle = currentTitle === '' || 
+                           currentTitle === 'VENTA INTERBANK' || 
+                           currentTitle === 'VENTA GENERAL' || 
+                           currentTitle === 'VENTA PERSONALIZADA';
+      
+      if (isDefaultTitle) {
+        switch(type) {
+          case 'interbank':
+            buttonTitle.value = 'VENTA INTERBANK';
+            break;
+          case 'ticketmaster':
+            buttonTitle.value = 'VENTA GENERAL';
+            break;
+          case 'custom':
+            buttonTitle.value = 'VENTA PERSONALIZADA';
+            break;
+          default:
+            buttonTitle.value = '';
+        }
+      }
+    }
+
+    function saveButtonData(e) {
+      e.preventDefault();
+      
+      if (!buttonType.value || !buttonStatus.value || !buttonTitle.value || 
+          !saleDate.value || !buttonText.value || !buttonLink.value) {
+        alert('Todos los campos son obligatorios');
+          return;
+        }
+        
+      if (buttonType.value === 'custom' && !customLogoUrl.value) {
+        alert('El URL del logo personalizado es obligatorio para venta personalizada');
+            return;
+          }
+          
+      const buttonData = {
+        type: buttonType.value,
+        status: buttonStatus.value,
+        title: buttonTitle.value,
+        date: saleDate.value,
+        buttonText: buttonText.value,
+        link: buttonLink.value,
+        customLogoUrl: buttonType.value === 'custom' ? customLogoUrl.value : null
+      };
+
+      if (editingButtonId) {
+        const index = buttons.findIndex(b => b.id === editingButtonId);
+        if (index !== -1) {
+          buttons[index] = { ...buttons[index], ...buttonData };
+        }
+      } else {
+        const newButton = {
+          id: Date.now().toString(),
+          ...buttonData
+        };
+        buttons.push(newButton);
+      }
+
+      saveButtons();
+      closeButtonEditor();
+      renderButtonList();
+      renderGlobalPreview();
+    }
+
+    function deleteButton(buttonId) {
+      if (confirm('¿Estás seguro de eliminar este botón?')) {
+        buttons = buttons.filter(b => b.id !== buttonId);
+        saveButtons();
+        renderButtonList();
+        renderGlobalPreview();
+      }
+    }
+
+    function renderGlobalPreview() {
+      if (buttons.length === 0) {
+        previewArea.innerHTML = `
+          <div class="empty-state">
+            <h3>No hay botones creados</h3>
+            <p>Agrega tu primer botón usando el panel de la izquierda</p>
+                </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      if (currentView === 'mobile') {
+        // Vista Mobile - estructura diferente con detalles del evento
+        html = '<div style="background: #e2e2e2; padding: 20px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; gap: 0;">';
+        
+        // Agregar header del evento para mobile
+        html += `
+          <div style="width: 380px;max-width: 380px;margin: 0 auto;padding: 12px 0px;text-align: center;border-bottom: 1px solid #D6D6D6;">
+            <div style="display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin-bottom: 8px;">
+              <div style="position: relative; display: inline-block;">
+                <div style="position: absolute; top: -3px; left: 0; right: 0; height: 1.5px; background: #121212;"></div>
+                <span style="font-size: 14px;font-weight: 700;color: #121212;text-transform: uppercase;letter-spacing: 2%;line-height: 1.2em;font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;">EVENTO EN</span>
+              </div>
+              <span style="font-size: 14px;font-weight: 700;color: #646464;letter-spacing: 2%;line-height: 1.2em;font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;text-transform: uppercase;">${eventDetails.name}</span>
+            </div>
+            <p style="font-size: 14px; font-weight: 600; color: #646464; margin: 0; text-align: left; display: flex; align-items: center; gap: 6px;"><img src="https://prod-assets.tmlat.com/Group_1321317495_447c543c40.svg" alt="Icono" style="width: 14px; height: 14px;"> ${formatEventDateForView(eventDetails.date, 'mobile')}</p>
+          </div>
+        `;
+        
+        buttons.forEach(button => {
+          const statusConfig = {
+            available: { text: 'DISPONIBLE', dotClass: 'tmpe-dot-available' },
+            soon: { text: 'PRÓXIMAMENTE', dotClass: 'tmpe-dot-soon' },
+            soldout: { text: 'AGOTADO', dotClass: 'tmpe-dot-soldout' },
+            canceled: { text: 'CANCELADO', dotClass: 'tmpe-dot-canceled' }
+          };
+
+          const status = statusConfig[button.status];
+          
+          // Determinar logo URL y estilo
+          let logoUrl, logoStyle;
+          if (button.type === 'custom') {
+            logoUrl = button.customLogoUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iIzAyNERERiIvPgo8cGF0aCBkPSJNMjAgMTBWMzBNMTAgMjBIMzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=';
+            logoStyle = 'background: #000000;';
+          } else if (button.type === 'interbank') {
+            logoUrl = 'https://prod-assets.tmlat.com/interbank_svg_f81dc84322.svg';
+            logoStyle = 'background: #1A1A1A;';
+          } else if (button.type === 'ticketmaster') {
+            logoUrl = 'https://prod-assets.tmlat.com/T_9318699a9f.svg';
+            logoStyle = 'background: #0744BD;';
+          }
+
+          // Determinar color del status dot
+          let dotColor;
+          switch(button.status) {
+            case 'available': dotColor = '#048851'; break;
+            case 'soon': dotColor = '#646464'; break;
+            case 'soldout': dotColor = '#DD2C00'; break;
+            case 'canceled': dotColor = '#646464'; break;
+            default: dotColor = '#048851';
+          }
+          
+          html += `
+            <div style="width: 380px; max-width: 380px; margin: 0 auto; background: #fff; border-bottom: 1px solid #D6D6D6; overflow: hidden;">
+              <a href="${button.link}" style="display: flex; width: 100%; padding: 20px 12px; gap: 16px; align-items: flex-start; text-decoration: none !important; color: inherit; cursor: pointer;">
+                <div style="width: 42px; height: 40px; border-radius: 2.68px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; ${logoStyle}">
+                  <img src="${logoUrl}" alt="Logo" style="width: 65%; height: 65%; object-fit: contain;">
+                  </div>
+                <div style="flex: 1;">
+                  <h2 style="font-size: 18px; line-height: 20px; letter-spacing: 0.32px; color: #121212; margin-bottom: 2px; font-weight: 700;">${button.title}</h2>
+                  <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                    <span style="font-size: 14px; line-height: 20px; letter-spacing: 0.28px; color: #828282;">Desde ${button.date}</span>
+                    <div style="display: flex; align-items: center; gap: 4px; border: 1px solid #D6D6D6; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.24px; line-height: 20px; color: #121212;">
+                      <span style="width: 10px; height: 10px; border-radius: 50%; background: ${dotColor};"></span>
+                      ${status.text}
+                      </div>
+                    </div>
+                  </div>
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: ${button.status === 'soon' ? '#FFF' : button.status === 'canceled' ? 'white' : button.status === 'soldout' ? '#949494' : '#024DDF'}; display: flex; align-items: center; justify-content: center; border: ${button.status === 'soon' || button.status === 'canceled' ? '0.818px solid #D6D6D6' : 'none'}; cursor: pointer; color: ${button.status === 'soon' ? '#646464' : button.status === 'canceled' ? '#024DDF' : 'white'}; text-decoration: none; transition: background-color 0.2s ease; align-self: flex-start; ${button.status === 'soon' ? 'box-shadow: 0px 4.909px 9.818px 0px rgba(0, 0, 0, 0.06);' : ''}">
+                  ${button.status === 'soon' ? 
+                    '<img src="https://prod-assets.tmlat.com/Bell_efe9ad8429.svg" width="16" height="16" alt="Bell icon" style="filter: brightness(0) saturate(100%) invert(42%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(85%);">' : 
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                  }
+                  </div>
+                </a>
+              </div>
+          `;
+        });
+        
+      } else {
+        // Vista Desktop - estructura replicando Mobile (sin fondo en header)
+        html = '<div style="background: #e2e2e2; padding: 20px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; gap: 0;">';
+        
+        // Agregar header del evento para desktop (igual que mobile, sin fondo)
+        html += `
+          <div style="width: 800px;max-width: 800px;margin: 0 auto;padding: 12px 0px;text-align: center;border-bottom: 1px solid #D6D6D6;">
+            <div style="display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin-bottom: 8px;">
+              <div style="position: relative; display: inline-block;">
+                <div style="position: absolute; top: -4px; left: 0; right: 0; height: 2px; background: #121212;"></div>
+                <span style="font-size: 20px; font-weight: 700; color: #121212; text-transform: uppercase; letter-spacing: 2%; line-height: 1.2em; font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;">EVENTO EN</span>
+      </div>
+              <span style="font-size: 20px; font-weight: 700; color: #646464; letter-spacing: 2%; line-height: 1.2em; font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;text-transform: uppercase;">${eventDetails.name}</span>
+    </div>
+            <p style="font-size: 18px; font-weight: 600; color: #646464; margin: 0; text-align: left; display: flex; align-items: center; gap: 8px;"><img src="https://prod-assets.tmlat.com/Group_1321317495_447c543c40.svg" alt="Icono" style="width: 16px; height: 16px;"> ${formatEventDateForView(eventDetails.date, 'desktop')}</p>
+  </div>
+        `;
+        
+        buttons.forEach(button => {
+          const statusConfig = {
+            available: { text: 'DISPONIBLE', dotClass: 'tmpe-dot-available' },
+            soon: { text: 'PRÓXIMAMENTE', dotClass: 'tmpe-dot-soon' },
+            soldout: { text: 'AGOTADO', dotClass: 'tmpe-dot-soldout' },
+            canceled: { text: 'CANCELADO', dotClass: 'tmpe-dot-canceled' }
+          };
+
+          const status = statusConfig[button.status];
+          
+          // Determinar logo URL y clase
+          let logoUrl, logoStyle;
+          if (button.type === 'custom') {
+            logoUrl = button.customLogoUrl || 'https://via.placeholder.com/56x56';
+            logoStyle = 'background: #000000;';
+          } else if (button.type === 'interbank') {
+            logoUrl = 'https://prod-assets.tmlat.com/interbank_svg_f81dc84322.svg';
+            logoStyle = 'background: #1A1A1A;';
+          } else if (button.type === 'ticketmaster') {
+            logoUrl = 'https://prod-assets.tmlat.com/T_9318699a9f.svg';
+            logoStyle = 'background: #0744BD;';
+          }
+
+          // Determinar color del status dot
+          let dotColor;
+          switch(button.status) {
+            case 'available': dotColor = '#048851'; break;
+            case 'soon': dotColor = '#646464'; break;
+            case 'soldout': dotColor = '#DD2C00'; break;
+            case 'canceled': dotColor = '#646464'; break;
+            default: dotColor = '#048851';
+          }
+
+          // Determinar botón según estado
+          let buttonElement;
+          if (button.status === 'soon') {
+            buttonElement = `
+              <button style="background: #FFFFFF; color: #646464; border: 1px solid #D6D6D6; border-radius: 23px; padding: 6px 12px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; margin-left: auto; text-decoration: none; box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.06); height: 39px; min-width: auto; justify-content: center; font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+                <img src="https://prod-assets.tmlat.com/Bell_efe9ad8429.svg" width="16" height="16" alt="Bell icon">
+                Recordármelo
+        </button>
+            `;
+      } else {
+            let buttonStyle;
+            if (button.status === 'canceled') {
+              buttonStyle = 'background: white; color: #024DDF; border: 1px solid #024DDF;';
+            } else if (button.status === 'soldout') {
+              buttonStyle = 'background: #EBEBEB; color: #949494; cursor: not-allowed;';
+            } else {
+              buttonStyle = 'background: #024DDF; color: white; border: none;';
+            }
+            
+            buttonElement = `
+              <a href="${button.link}" style="${buttonStyle} border-radius: 4px; padding: 16px 40px; font-size: 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; margin-left: auto; text-decoration: none; letter-spacing: 0.32px; line-height: 24px; height: 48px; min-width: 150px; justify-content: center; transition: all 0.3s ease;">
+                ${button.buttonText}
+                <svg width="20" height="20" viewBox="0 0 20 20"><polyline points="7 5 13 10 7 15" fill="none" stroke="${button.status === 'canceled' ? '#024DDF' : button.status === 'soldout' ? '#949494' : '#fff'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            `;
+          }
+          
+          html += `
+            <div style="width: 800px; max-width: 800px; margin: 0 auto; background: #fff; border-bottom: 1px solid #D6D6D6; overflow: hidden;">
+              <div style="display: flex; align-items: center; padding: 20px 24px; position: relative; justify-content: space-between; gap: 24px;">
+                <div style="width: 56px; height: 56px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; ${logoStyle}">
+                  <img src="${logoUrl}" alt="Logo" style="width: 65%; height: 65%; object-fit: contain;">
+      </div>
+                <div style="flex: 1;">
+                  <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #262626; letter-spacing: 0.4px; line-height: 20px;">${button.title}</h2>
+                  <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 4px; border: 1px solid #D6D6D6; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 600; text-transform: uppercase; height: 22px; letter-spacing: 0.24px; line-height: 20px;">
+                      <span style="width: 10px; height: 10px; border-radius: 50%; background: ${dotColor};"></span>
+                      ${status.text}
+    </div>
+                    <span style="color: #7D7D7D; font-size: 16px; font-weight: 400; letter-spacing: 0.32px; line-height: 20px;">Desde ${button.date}</span>
+  </div>
+                </div>
+                ${buttonElement}
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      html += '</div>';
+      previewArea.innerHTML = html;
+    }
+
+    // Función auxiliar para formatear la fecha
+    function formatEventDateForView(dateString, view) {
+      if (!dateString) {
+        return '15 NOV 2025'; // Siempre en mayúsculas para ambas vistas
+      }
+      
+      // Evitar problemas de zona horaria usando split en lugar de new Date()
+      const [year, month, day] = dateString.split('-');
+      const date = new Date(year, month - 1, day); // month - 1 porque los meses van de 0-11
+      
+      const options = { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric' 
+      };
+      
+      // Ambas vistas necesitamos mayúsculas
+      return date.toLocaleDateString('es-ES', options).toUpperCase();
+    }
+
+    // Función original para compatibilidad
+    function formatEventDate(dateString) {
+      return formatEventDateForView(dateString, currentView);
+    }
+
+    // Event Listeners
+    addNewButton.addEventListener('click', () => openButtonEditor());
+    buttonEditorForm.addEventListener('submit', saveButtonData);
+    document.getElementById('cancel-button').addEventListener('click', closeButtonEditor);
+    closeButtonModal.addEventListener('click', closeButtonEditor);
+    buttonType.addEventListener('change', handleTypeChange);
+    
+    showCodeButton.addEventListener('click', generateGlobalCode);
+    closeModal.addEventListener('click', () => codeModal.style.display = 'none');
+    
+    desktopViewBtn.addEventListener('click', () => {
+      desktopViewBtn.classList.add('active');
+      mobileViewBtn.classList.remove('active');
+      currentView = 'desktop';
+      renderGlobalPreview();
+    });
+    
+    mobileViewBtn.addEventListener('click', () => {
+      mobileViewBtn.classList.add('active');
+      desktopViewBtn.classList.remove('active');
+      currentView = 'mobile';
+      renderGlobalPreview();
+    });
+    
+    copyCodeButton.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeDisplay.textContent).then(() => {
+        const originalText = copyCodeButton.textContent;
+        copyCodeButton.textContent = '✅ ¡Copiado!';
+      setTimeout(() => {
+        copyCodeButton.textContent = originalText;
+      }, 2000);
+      });
+    });
+
+    // Event listeners para detalles del evento
+    saveEventDetailsButton.addEventListener('click', handleSaveEventDetails);
+
+    // Auto-guardado al cambiar los campos
+    // DESHABILITADO: Ahora solo se actualiza al hacer clic en "Guardar"
+    // eventNameInput.addEventListener('input', () => {
+    //   eventDetails.name = eventNameInput.value;
+    //   updateEventPreview();
+    // });
+
+    // eventDateInput.addEventListener('change', () => {
+    //   eventDetails.date = eventDateInput.value;
+    //   updateEventPreview();
+    // });
+
+    // Cerrar modales al hacer clic fuera
+    window.addEventListener('click', (e) => {
+      if (e.target === codeModal) {
+        codeModal.style.display = 'none';
+      }
+      if (e.target === buttonEditorModal) {
+        closeButtonEditor();
+      }
+    });
+
+    // Atajos de teclado
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        generateGlobalCode();
+      }
+      if (e.key === 'Escape') {
+        if (codeModal.style.display === 'flex') {
+          codeModal.style.display = 'none';
+        } else if (buttonEditorModal.style.display === 'flex') {
+          closeButtonEditor();
+        }
+      }
+    });
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      loadButtons();
+      loadEventDetails();
+      renderButtonList();
+      renderGlobalPreview();
+    });
+
+    // Funciones para manejar detalles del evento
+    function loadEventDetails() {
+      const saved = localStorage.getItem('cms-event-details');
+      if (saved) {
+        try {
+          eventDetails = JSON.parse(saved);
+        } catch (e) {
+          eventDetails = {
+            name: 'sao paulo, estadio morimbus',
+            date: '2025-11-15'
+          };
+        }
+      }
+      updateEventPreview();
+      updateEventForm();
+    }
+
+    function saveEventDetails() {
+      localStorage.setItem('cms-event-details', JSON.stringify(eventDetails));
+    }
+
+    function updateEventPreview() {
+      // Actualizar la previsualización global
+      renderGlobalPreview();
+    }
+
+    function updateEventForm() {
+      eventNameInput.value = eventDetails.name || '';
+      eventDateInput.value = eventDetails.date || '';
+    }
+
+    function handleSaveEventDetails() {
+      const name = eventNameInput.value.trim();
+      const date = eventDateInput.value;
+
+      if (!name) {
+        alert('Por favor, introduce el nombre y lugar del evento');
+          return;
+        }
+        
+      if (!date) {
+        alert('Por favor, selecciona la fecha del evento');
+            return;
+          }
+          
+      eventDetails.name = name;
+      eventDetails.date = date;
+      
+      saveEventDetails();
+      updateEventPreview();
+      
+      // Mostrar confirmación
+      const originalText = saveEventDetailsButton.textContent;
+      saveEventDetailsButton.textContent = '✅ ¡Guardado!';
+      saveEventDetailsButton.style.background = '#059669';
+      
+      setTimeout(() => {
+        saveEventDetailsButton.textContent = originalText;
+        saveEventDetailsButton.style.background = '#10b981';
+      }, 2000);
+    }
+
+    function generateGlobalCode() {
+      // Cerrar el modal del editor si está abierto
+      if (buttonEditorModal.style.display === 'flex') {
+        closeButtonEditor();
+      }
+      
+      if (buttons.length === 0) {
+        alert('No hay botones para generar código');
+        return;
+      }
+
+      // Generar botones para desktop y mobile usando la nueva estructura
+      let desktopButtonsHTML = '';
+      let mobileButtonsHTML = '';
+      
+      buttons.forEach(button => {
+        // Determinar logo URL y clase según tipo
+        let logoUrl, logoClass;
+        if (button.type === 'custom') {
+          logoUrl = button.customLogoUrl || 'https://via.placeholder.com/56x56/000000/FFFFFF?text=LOGO';
+          logoClass = 'tmpe-logo-custom';
+        } else if (button.type === 'interbank') {
+          logoUrl = 'https://prod-assets.tmlat.com/interbank_svg_f81dc84322.svg';
+          logoClass = 'tmpe-logo-interbank';
+        } else if (button.type === 'ticketmaster') {
+          logoUrl = 'https://prod-assets.tmlat.com/T_9318699a9f.svg';
+          logoClass = 'tmpe-logo-ticketmaster';
+        }
+
+        // Mapeo de estados
+        const statusConfig = {
+          available: { text: 'DISPONIBLE', dot: 'tmpe-dot-available' },
+          soon: { text: 'PRÓXIMAMENTE', dot: 'tmpe-dot-soon' },
+          soldout: { text: 'AGOTADO', dot: 'tmpe-dot-soldout' },
+          canceled: { text: 'CANCELADO', dot: 'tmpe-dot-canceled' }
+        };
+
+        const currentStatus = statusConfig[button.status];
+        
+        // Generar botón desktop según estado
+        let desktopButton;
+        if (button.status === 'soon') {
+          desktopButton = `<div class="tmpe-link-reminder">
+            <img src="https://prod-assets.tmlat.com/Bell_efe9ad8429.svg" width="16" height="16" alt="Bell icon" style="filter: brightness(0) saturate(100%) invert(42%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(85%);">
+            Recordármelo
+          </div>`;
+        } else if (button.status === 'canceled') {
+          desktopButton = `<a href="${button.link}" class="tmpe-link-details" style="background: white; color: #024DDF; border: 1px solid #024DDF;">
+            ${button.buttonText}
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <polyline points="7 5 13 10 7 15" fill="none" stroke="#024DDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>`;
+        } else if (button.status === 'soldout') {
+          desktopButton = `<a href="${button.link}" class="tmpe-link-details" style="background: #EBEBEB; color: #949494; cursor: not-allowed;">
+            ${button.buttonText}
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <polyline points="7 5 13 10 7 15" fill="none" stroke="#949494" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>`;
+        } else {
+          desktopButton = `<a href="${button.link}" class="tmpe-link-details">
+            ${button.buttonText}
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <polyline points="7 5 13 10 7 15" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>`;
+        }
+        
+        // Generar botón móvil según estado
+        let mobileButton;
+        if (button.status === 'soon') {
+          mobileButton = `<div class="tmpe-link-mobile" style="background: #FFF; border: 0.818px solid #D6D6D6; border-radius: 350px; box-shadow: 0px 4.909px 9.818px 0px rgba(0, 0, 0, 0.06);">
+            <img src="https://prod-assets.tmlat.com/Bell_efe9ad8429.svg" width="16" height="16" alt="Bell icon" style="filter: brightness(0) saturate(100%) invert(42%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(85%);">
+          </div>`;
+        } else if (button.status === 'canceled') {
+          mobileButton = `<div class="tmpe-link-mobile" style="background: white; border: 1px solid #024DDF;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6L15 12L9 18" stroke="#024DDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>`;
+        } else if (button.status === 'soldout') {
+          mobileButton = `<div class="tmpe-link-mobile" style="background: #949494;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6L15 12L9 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>`;
+        } else {
+          mobileButton = `<div class="tmpe-link-mobile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6L15 12L9 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>`;
+        }
+      
+        // Generar HTML para desktop
+        desktopButtonsHTML += `
+    <!-- ${button.title} -->
+    <div class="tmpe-ticket-item">
+      <div class="tmpe-logo-container ${logoClass}">
+        <img class="tmpe-logo-img" src="${logoUrl}" alt="Logo">
+      </div>
+      <div class="tmpe-info-container">
+        <h2 class="tmpe-ticket-title">${button.title}</h2>
+        <div class="tmpe-status-container">
+          <div class="tmpe-status-badge">
+            <span class="tmpe-status-dot ${currentStatus.dot}"></span>
+            <span>${currentStatus.text}</span>
+          </div>
+          <span class="tmpe-date-text">Inicio de venta: ${button.date}</span>
+        </div>
+      </div>
+      ${desktopButton}
+    </div>`;
+      
+        // Generar HTML para móvil
+        const mobileWrapper = button.status === 'soon' ? 
+          `<div class="tmpe-ticket-link" style="cursor: default;">` : 
+          `<a href="${button.link}" class="tmpe-ticket-link">`;
+        const mobileWrapperClose = button.status === 'soon' ? `</div>` : `</a>`;
+
+        mobileButtonsHTML += `
+    <!-- ${button.title} -->
+    <div class="tmpe-ticket-item">
+      ${mobileWrapper}
+        <div class="tmpe-logo-container ${logoClass}">
+          <img class="tmpe-logo-img" src="${logoUrl}" alt="Logo">
+        </div>
+        <div class="tmpe-info-container">
+          <h2 class="tmpe-ticket-title">${button.title}</h2>
+          <div class="tmpe-status-container">
+            <span class="tmpe-date-text">Inicio de venta ${button.date}</span>
+            <div class="tmpe-status-badge">
+              <span class="tmpe-status-dot ${currentStatus.dot}"></span>
+              <span>${currentStatus.text}</span>
+            </div>
+          </div>
+        </div>
+        ${mobileButton}
+      ${mobileWrapperClose}
+    </div>`;
+      });
+
+      // CSS completo basado en index5.html
+      const cssStyles = `/* CSS Reset básico */
+.tmpe-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.tmpe-container {
+  width: 800px !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  background: #FAFBFC;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+@media (max-width: 800px) {
+  .tmpe-container {
+    width: 100% !important;
+  }
+}
+
+/* Default state - Desktop first */
+.tmpe-desktop-view {
+  display: block;
+}
+
+.tmpe-mobile-view {
+  display: none;
+}
+
+/* Tarjetas de ticket - Desktop */
+.tmpe-ticket-item {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  background: #fff;
+  border-bottom: 1px solid #D6D6D6;
+  position: relative;
+  justify-content: space-between;
+  gap: 24px;
+  transition: background-color 0.2s ease;
+}
+
+.tmpe-logo-container {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tmpe-logo-interbank {
+  background: #1A1A1A;
+}
+
+.tmpe-logo-ticketmaster {
+  background: #0744BD;
+}
+
+.tmpe-logo-custom {
+  background: #000000;
+}
+
+.tmpe-logo-img {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+}
+
+.tmpe-info-container {
+  flex: 1;
+}
+
+/* Tipografía directamente aplicada con alta especificidad */
+.tmpe-container .tmpe-ticket-title {
+  font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #262626;
+  letter-spacing: 0.4px;
+  line-height: 20px;
+}
+
+.tmpe-container .tmpe-date-text {
+  font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #7D7D7D;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.32px;
+  line-height: 20px;
+}
+
+.tmpe-status-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tmpe-container .tmpe-status-badge {
+  font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #D6D6D6;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  height: 22px;
+  letter-spacing: 0.24px;
+  line-height: 20px;
+}
+
+.tmpe-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.tmpe-dot-available {
+  background: #048851;
+}
+
+.tmpe-dot-soon {
+  background: #646464;
+}
+
+.tmpe-dot-soldout {
+  background: #DD2C00;
+}
+
+.tmpe-dot-canceled {
+  background: #646464;
+}
+
+/* Estilo de enlace según diseño */
+.tmpe-container .tmpe-link-details {
+  font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #024DDF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 16px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-left: auto;
+  text-decoration: none;
+  letter-spacing: 0.32px;
+  line-height: 24px;
+  height: 48px;
+  min-width: 150px;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.tmpe-link-reminder {
+  background: #FFFFFF;
+  color: #646464;
+  border: 1px solid #D6D6D6;
+  border-radius: 23px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  margin-left: auto;
+  text-decoration: none;
+  box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.06);
+  height: 39px;
+  min-width: auto;
+  justify-content: center;
+  font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.tmpe-link-mobile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #024DDF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .tmpe-desktop-view {
+    display: none;
+  }
+  
+  .tmpe-mobile-view {
+    display: block;
+    box-shadow: 0px 1px 4px 0px rgba(18, 18, 18, 0.15);
+  }
+  
+  .tmpe-ticket-item {
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+  }
+  
+  .tmpe-ticket-link {
+    display: flex;
+    width: 100%;
+    padding: 20px 12px;
+    gap: 16px;
+    align-items: flex-start;
+    text-decoration: none !important;
+    color: inherit;
+    cursor: pointer;
+  }
+  
+  .tmpe-logo-container {
+    width: 42px;
+    height: 40px;
+    margin-right: 0;
+    border-radius: 2.68px;
+    margin-top: 0;
+    align-self: flex-start;
+  }
+  
+  .tmpe-container .tmpe-ticket-title {
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: 0.32px;
+    color: #121212;
+    margin-bottom: 2px;
+  }
+
+  .tmpe-container .tmpe-date-text {
+    font-size: 14px;
+    margin-left: 0;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: #828282;
+  }
+  
+  .tmpe-status-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .tmpe-container .tmpe-status-badge {
+    font-size: 12px;
+    letter-spacing: 0.24px;
+    line-height: 20px;
+    color: #121212;
+  }
+
+  .tmpe-link-mobile {
+    width: 36px;
+    height: 36px;
+    background: #024DDF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 0;
+  }
+}
+
+/* Desktop hover effect */
+@media (min-width: 769px) {
+  .tmpe-ticket-item:hover {
+    background-color: #F6F6F6;
+  }
+  
+  .tmpe-link-details:hover {
+    background-color: #0035A0;
+  }
+}
+
+/* Mobile hover/active effects */
+@media (max-width: 768px) {
+  .tmpe-ticket-link:hover, 
+  .tmpe-ticket-link:active {
+    background-color: #F6F6F6;
+  }
+  
+  .tmpe-ticket-link:hover .tmpe-link-mobile, 
+  .tmpe-ticket-link:active .tmpe-link-mobile {
+    background-color: #0035A0;
+  }
+}`;
+
+      const fullCode = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botones de Venta - Interface</title>
+  <style>
+    ${cssStyles}
+  </style>
+</head>
+<body>
+
+<div class="tmpe-container">
+  <!-- Vista Desktop -->
+  <div class="tmpe-desktop-view">
+${desktopButtonsHTML}
+  </div>
+  
+  <!-- Vista Mobile -->
+  <div class="tmpe-mobile-view">
+${mobileButtonsHTML}
+  </div>
+</div>
+
+</body>
+</html>`;
+
+      codeDisplay.textContent = fullCode;
+      codeModal.style.display = 'flex';
+    }
+  </script>
+</body>
+</html> 
+</html> // VERIFICACION: Cambios aplicados - Fri May 30 19:29:26 -05 2025

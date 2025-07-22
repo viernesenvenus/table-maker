@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla de Precios - My Chemical Romance</title>
+  <style>
+    /* CSS Reset básico */
+    .tabla-orbita-container * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    
+    .tabla-orbita-container {
+      width: 976px !important;
+      max-width: 976px !important;
+      margin: 0 auto !important;
+      background: transparent !important;
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box !important;
+      overflow: visible !important;
+    }
+
+    @media (max-width: 976px) {
+      .tabla-orbita-container {
+        width: 100% !important;
+      }
+    }
+
+    /* Header del evento - Estilos únicos para evitar conflictos */
+    .tabla-orbita-container .evento-header-orbita {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 22px 21px 22px 10px !important;
+      background: #024DDF !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .tabla-orbita-container .evento-info-orbita {
+      flex: 1 !important;
+      text-align: left !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .evento-info-orbita h1 {
+      font-family: 'Averta', sans-serif !important;
+      font-weight: 900 !important;
+      font-size: 36px !important;
+      line-height: 41px !important;
+      letter-spacing: -3% !important;
+      text-transform: uppercase !important;
+      color: #FFFFFF !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .evento-detalles-orbita {
+      font-family: 'Averta', sans-serif !important;
+      font-weight: 400 !important;
+      font-size: 14px !important;
+      line-height: 21px !important;
+      letter-spacing: 2% !important;
+      color: #FFFFFF !important;
+      text-align: right !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* Contenido principal desktop - Estilos únicos */
+    .tabla-orbita-container .desktop-contenido-orbita {
+      display: flex !important;
+      gap: 28px !important;
+      padding: 16px 21px 20px 10px !important;
+      background: transparent !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .tabla-orbita-container .seccion-precios-orbita {
+      flex: 0.55 !important;
+      background: transparent !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .titulo-seccion-orbita {
+      font-family: 'Averta', sans-serif !important;
+      font-weight: 900 !important;
+      font-size: 28px !important;
+      line-height: 41px !important;
+      letter-spacing: -3% !important;
+      color: #024DDF !important;
+      margin: 0 0 10px 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    /* Tabla Desktop - Estructura exacta centrada - Estilos únicos */
+    .tabla-orbita-container .tabla-wrapper-orbita {
+      display: table !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background: transparent !important;
+      border-collapse: separate !important;
+      border-spacing: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Fila de headers - Estilos únicos */
+    .tabla-orbita-container .fila-headers-orbita {
+      display: table-row !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Fila de datos - Estilos únicos */
+    .tabla-orbita-container .fila-datos-orbita {
+      display: table-row !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Columna de sectores - Estilos únicos optimizados */
+    .tabla-orbita-container .columna-sectores-orbita {
+      display: table-cell !important;
+      width: 140px !important;
+      min-width: 140px !important;
+      background: transparent !important;
+      vertical-align: top !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Header principal de sectores - Estilos únicos */
+    .tabla-orbita-container .header-sectores-orbita {
+      background: transparent !important;
+      border-bottom: 1.7px solid #024DDF !important;
+      text-align: left !important;
+      padding: 26px 11px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      height: 50px !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+    }
+
+    .tabla-orbita-container .header-sectores-orbita span {
+      font-family: 'Averta', sans-serif !important;
+      font-weight: 700 !important;
+      font-size: 16px !important;
+      line-height: 16px !important;
+      letter-spacing: 1% !important;
+      color: #024DDF !important;
+      opacity: 0.9 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Indicador de color inline */
+    .indicador-color-orbita {
+      vertical-align: middle;
+    }
+
+    /* Columnas de precios - Anchos compactos optimizados */
+    .tabla-orbita-container .columna-precio-orbita {
+      display: table-cell !important;
+      width: 80px !important;
+      min-width: 80px !important;
+      background: transparent !important;
+      vertical-align: top !important;
+      border-bottom: 1.7px solid #024DDF !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Headers de precios */
+    .header-precio-orbita {
+      background: transparent !important;
+      text-align: center;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      box-sizing: border-box;
+    }
+
+    .header-precio-orbita span {
+      font-family: 'Averta', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 14px;
+      letter-spacing: 1%;
+      color: #024DDF;
+      opacity: 0.9;
+    }
+
+    /* Celdas de datos */
+    .celda-dato-orbita {
+      display: table-cell;
+      text-align: center;
+      padding: 5px 0;
+      border-bottom: 1.2px solid #979797;
+      vertical-align: middle;
+      height: 45px;
+      box-sizing: border-box;
+      background: transparent !important;
+    }
+
+    .celda-dato-orbita span {
+      font-family: 'Averta', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 17px;
+      letter-spacing: 1%;
+      color: #121212;
+      opacity: 0.9;
+    }
+
+    /* Celda específica para sectores - alineada a la izquierda */
+    .celda-sector-orbita {
+      text-align: left;
+      padding: 10px 11px;
+      display: table-cell;
+      gap: 7px;
+    }
+
+    .celda-sector-orbita span {
+      font-family: 'Averta', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 16px;
+      letter-spacing: 1%;
+      color: #121212;
+      opacity: 0.9;
+    }
+
+    /* Celdas de la columna de servicio con fondo azul */
+    .celda-servicio-orbita {
+      background: transparent !important;
+    }
+
+    .celda-servicio-orbita span {
+      color: #121212;
+      opacity: 0.9;
+    }
+
+    /* Estilo específico para el primer precio de cada fila */
+    .celda-precio-primera span {
+      font-size: 15.5px;
+      line-height: 17px;
+    }
+
+    /* Headers de servicios - mismo estilo que precios */
+    .header-servicio-orbita {
+      background: transparent !important;
+      text-align: center;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      box-sizing: border-box;
+    }
+
+    .header-servicio-orbita span {
+      font-family: 'Averta', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 14px;
+      letter-spacing: 1%;
+      color: #024DDF;
+      opacity: 0.9;
+    }
+
+    /* Sección del mapa desktop - Aumentado para mejor visualización */
+    .tabla-orbita-container .seccion-mapa-orbita {
+      flex: 0.45 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 15px !important;
+      min-height: 400px !important;
+      background: transparent !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .placeholder-mapa-orbita {
+      flex: 1 !important;
+      background: transparent !important;
+      border-radius: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-height: 300px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Footer desktop - alineado con el contenido principal - Estilos únicos */
+    .tabla-orbita-container .footer-seccion-orbita {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 0 21px 20px 10px !important;
+      background: transparent !important;
+      gap: 28px !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .tabla-orbita-container .footer-izquierdo-orbita {
+      flex: 1 !important;
+      display: flex !important;
+      align-items: center !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .footer-derecho-orbita {
+      flex: 1 !important;
+      display: flex !important;
+      justify-content: flex-end !important;
+      align-items: center !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .logo-ticketmaster-orbita {
+      background: transparent !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tabla-orbita-container .logo-ticketmaster-orbita img {
+      height: 24px !important;
+      width: auto !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+    }
+
+    .tabla-orbita-container .disclaimer-mapa-orbita {
+      font-family: 'Averta', sans-serif !important;
+      font-weight: 600 !important;
+      font-size: 10.34px !important;
+      line-height: 20px !important;
+      letter-spacing: 1% !important;
+      color: #121212 !important;
+      background: transparent !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* MOBILE VERSION - Oculta por defecto */
+    .version-mobile-orbita {
+      display: none;
+    }
+
+    /* Media Query para Mobile */
+    @media (max-width: 768px) {
+      .version-desktop-orbita {
+        display: none;
+      }
+
+      .version-mobile-orbita {
+        display: block;
+      }
+
+      .tabla-orbita-container {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      /* Header mobile - Estilos únicos para evitar conflictos */
+      .tabla-orbita-container .header-mobile-orbita {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 12px !important;
+        background: #024DDF !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      .tabla-orbita-container .info-evento-mobile-orbita {
+        flex: 1 !important;
+        text-align: left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .info-evento-mobile-orbita h1 {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 900 !important;
+        font-size: 20px !important;
+        line-height: 24px !important;
+        letter-spacing: -0.6px !important;
+        text-transform: uppercase !important;
+        color: #FFFFFF !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .detalles-evento-mobile-orbita {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 12px !important;
+        line-height: 14px !important;
+        letter-spacing: 0.2px !important;
+        color: #FFFFFF !important;
+        text-align: right !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+      }
+
+      /* Contenido mobile - Estilos únicos */
+      .tabla-orbita-container .contenido-mobile-orbita {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        background: transparent !important;
+        padding-top: 12px !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      .tabla-orbita-container .titulo-seccion-mobile-orbita {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 900 !important;
+        font-size: 18px !important;
+        line-height: 24px !important;
+        letter-spacing: -0.48px !important;
+        color: #024DDF !important;
+        padding: 0 0px !important;
+        margin: 0 0 8px 0 !important;
+        background: transparent !important;
+      }
+
+      /* Mapa mobile - SEPARADO del disclaimer - Estilos únicos */
+      .tabla-orbita-container .seccion-mapa-mobile-orbita {
+        margin: 0 0 16px 0 !important;
+        background: transparent !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .placeholder-mapa-mobile-orbita {
+        height: 300px !important;
+        background: transparent !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 6px 12px !important;
+        box-sizing: border-box !important;
+      }
+
+      .tabla-orbita-container .disclaimer-mapa-mobile-orbita {
+        text-align: right !important;
+        padding: 0 12px !important;
+        background: transparent !important;
+        margin: 0 !important;
+      }
+
+      .tabla-orbita-container .disclaimer-mapa-mobile-orbita span {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 10px !important;
+        line-height: 24px !important;
+        letter-spacing: 0.08px !important;
+        color: #121212 !important;
+        background: transparent !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Tabla mobile - estructura mejorada para parecerse a desktop - Estilos únicos */
+      .tabla-orbita-container .seccion-precios-mobile-orbita {
+        padding: 0 6px !important;
+        background: transparent !important;
+        margin: 0 !important;
+      }
+
+      .tabla-orbita-container .layout-tabla-mobile-orbita {
+        display: block !important;
+        background: transparent !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Header row mobile - estructura de tabla - Estilos únicos */
+      .tabla-orbita-container .headers-row-mobile-orbita {
+        display: flex !important;
+        background: transparent !important;
+        margin: 0 0 0 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Header de sectores mobile - ancho fijo para alineación - Estilos únicos */
+      .tabla-orbita-container .header-sectores-mobile-orbita {
+        width: 140px !important;
+        background: transparent !important;
+        border-bottom: 1.7px solid #024DDF !important;
+        text-align: left !important;
+        padding: 8px 8px !important;
+        margin: 0 !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        box-sizing: border-box !important;
+        flex-shrink: 0 !important;
+      }
+
+      .tabla-orbita-container .header-sectores-mobile-orbita span {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+        line-height: 8px !important;
+        letter-spacing: 0.1px !important;
+        color: #024DDF !important;
+        opacity: 0.9 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+            /* Container de headers de precios para alineación perfecta - Estilos únicos */
+      .tabla-orbita-container .headers-precios-mobile-orbita {
+        display: flex !important;
+        background: transparent !important;
+        flex: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .header-precio-mobile-orbita {
+        flex: 1 !important;
+        background: transparent !important;
+        border-bottom: 1.7px solid #024DDF !important;
+        text-align: center !important;
+        padding: 8px 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 40px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+      }
+
+      .tabla-orbita-container .header-precio-mobile-orbita span {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+        line-height: 7px !important;
+        letter-spacing: 0.1px !important;
+        color: #024DDF !important;
+        opacity: 0.9 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .header-servicio-mobile-orbita {
+        background: transparent !important;
+      }
+
+      /* Filas de datos mobile - estructura alineada con headers - Estilos únicos */
+      .tabla-orbita-container .fila-datos-mobile-orbita {
+        display: flex !important;
+        background: transparent !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Sectores individuales mobile - mismo ancho que header de sectores - Estilos únicos */
+      .tabla-orbita-container .item-sector-mobile-orbita {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        padding: 8px 8px !important;
+        border-bottom: 1.2px solid #979797 !important;
+        min-height: 32px !important;
+        background: transparent !important;
+        width: 140px !important;
+        box-sizing: border-box !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+      }
+
+      .tabla-orbita-container .color-sector-mobile-orbita {
+        width: 10px !important;
+        height: 10px !important;
+        border-radius: 1px !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .item-sector-mobile-orbita span {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+        line-height: 10px !important;
+        letter-spacing: 0.09px !important;
+        color: #121212 !important;
+        opacity: 0.9 !important;
+        text-align: left !important;
+        flex: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Container de precios mobile - alineado con headers de precios - Estilos únicos */
+      .tabla-orbita-container .fila-precios-mobile-orbita {
+        display: flex !important;
+        background: transparent !important;
+        flex: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .celda-precio-mobile-orbita {
+        flex: 1 !important;
+        text-align: center !important;
+        padding: 8px 2px !important;
+        border-bottom: 1.2px solid #979797 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 32px !important;
+        background: transparent !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+      }
+
+      .tabla-orbita-container .celda-servicio-mobile-orbita {
+        background: transparent !important;
+      }
+
+      .tabla-orbita-container .celda-precio-mobile-orbita span {
+        font-family: 'Averta', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+        line-height: 10px !important;
+        letter-spacing: 0.1px !important;
+        color: #121212 !important;
+        opacity: 0.9 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Footer mobile - Estilos únicos */
+      .tabla-orbita-container .footer-mobile-orbita {
+        padding: 4px 8px !important;
+        display: flex !important;
+        justify-content: left !important;
+        background: transparent !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      .tabla-orbita-container .logo-ticketmaster-mobile-orbita {
+        background: transparent !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-orbita-container .logo-ticketmaster-mobile-orbita img {
+        height: 16px !important;
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+      }
+    }
+
+    /* Hover effects para desktop - Estilos únicos */
+    @media (min-width: 769px) {
+      .tabla-orbita-container .tabla-wrapper-orbita:hover .celda-dato-orbita {
+        background-color: rgba(246, 246, 246, 0.3) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="tabla-orbita-container">
+  <!-- VERSIÓN DESKTOP -->
+  <div class="version-desktop-orbita">
+    <!-- Header del evento -->
+    <div class="evento-header-orbita">
+      <div class="evento-info-orbita">
+        <h1>My Chemical Romance</h1>
+      </div>
+      <div class="evento-detalles-orbita">
+        25 de Enero 2026<br>
+        Lima, Perú<br>
+        Move Concerts
+      </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="desktop-contenido-orbita">
+      <!-- Sección de precios -->
+      <div class="seccion-precios-orbita">
+        <h2 class="titulo-seccion-orbita">MAPA Y PRECIOS</h2>
+        
+        <!-- Estructura de tabla exacta centrada -->
+        <div class="tabla-wrapper-orbita">
+          <!-- Fila de headers -->
+          <div class="fila-headers-orbita">
+            <div class="columna-sectores-orbita">
+              <div class="header-sectores-orbita">
+                <span>Sectores</span>
+              </div>
+            </div>
+            <div class="columna-precio-orbita">
+              <div class="header-precio-orbita">
+                <span>Inteira</span>
+              </div>
+            </div>
+            <div class="columna-precio-orbita">
+              <div class="header-servicio-orbita">
+                <span>Servicio</span>
+              </div>
+            </div>
+            <div class="columna-precio-orbita">
+              <div class="header-servicio-orbita">
+                <span>Servicio</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filas de datos -->
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #011391; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Sector Azul</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #021391; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Sector Amarelo</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #5763B6; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Sector Branco</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #820806; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Camarote Andar 2</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #820806; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Camarote Andar 3</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #480000; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Frisa</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+
+          <div class="fila-datos-orbita">
+            <div class="celda-dato-orbita celda-sector-orbita">
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: #480000; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <span>Frisa</span>
+            </div>
+            <div class="celda-dato-orbita celda-precio-primera"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+            <div class="celda-dato-orbita celda-servicio-orbita"><span>RS1.100,00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección del mapa -->
+      <div class="seccion-mapa-orbita">
+        <div class="placeholder-mapa-orbita">
+          <img src="https://prod-assets.tmlat.com/Mapaejemplo_967addf83e.png" alt="Mapa del venue" style="max-width: 100%; max-height: 100%; object-fit: contain; border: none; background: transparent; display: block;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-seccion-orbita">
+      <div class="footer-izquierdo-orbita">
+        <div class="logo-ticketmaster-orbita">
+          <img src="https://prod-assets.tmlat.com/ticketmaster_ededff4045.svg" alt="Ticketmaster">
+        </div>
+      </div>
+      <div class="footer-derecho-orbita">
+        <span class="disclaimer-mapa-orbita">MAPA ILUSTRATIVO</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSIÓN MOBILE -->
+  <div class="version-mobile-orbita">
+    <!-- Header mobile -->
+    <div class="header-mobile-orbita">
+      <div class="info-evento-mobile-orbita">
+        <h1>My Chemical<br>Romance</h1>
+      </div>
+      <div class="detalles-evento-mobile-orbita">
+        25 de Enero 2026<br>
+        Lima, Perú<br>
+        Move Concerts
+      </div>
+    </div>
+
+    <!-- Contenido mobile -->
+    <div class="contenido-mobile-orbita">
+      <!-- Título sección -->
+      <div style="padding: 0 10px; background: transparent;">
+        <h2 class="titulo-seccion-mobile-orbita">MAPA Y PRECIOS</h2>
+      </div>
+
+      <!-- Mapa mobile - SEPARADO del disclaimer -->
+      <div class="seccion-mapa-mobile-orbita">
+        <div class="placeholder-mapa-mobile-orbita">
+          <img src="https://prod-assets.tmlat.com/Mapaejemplo_967addf83e.png" alt="Mapa del venue" style="max-width: 100%; max-height: 100%; object-fit: contain; border: none; background: transparent; display: block;">
+        </div>
+        <!-- Disclaimer separado del mapa -->
+        <div class="disclaimer-mapa-mobile-orbita">
+          <span>MAPA ILUSTRATIVO</span>
+        </div>
+      </div>
+
+      <!-- Tabla mobile -->
+      <div class="seccion-precios-mobile-orbita">
+        <div class="layout-tabla-mobile-orbita">
+          <!-- Fila de headers -->
+          <div class="headers-row-mobile-orbita">
+            <div class="header-sectores-mobile-orbita">
+              <span>Sectores</span>
+            </div>
+            <div class="headers-precios-mobile-orbita">
+              <div class="header-precio-mobile-orbita">
+                <span>Inteira</span>
+              </div>
+              <div class="header-precio-mobile-orbita header-servicio-mobile-orbita">
+                <span>Servicio</span>
+              </div>
+              <div class="header-precio-mobile-orbita header-servicio-mobile-orbita">
+                <span>Servicio</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filas de datos -->
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #011391;"></div>
+              <span>Sector Azul</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #021391;"></div>
+              <span>Sector Amarelo</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #5763B6;"></div>
+              <span>Sector Branco</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #820806;"></div>
+              <span>Camarote Andar 2</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #820806;"></div>
+              <span>Camarote Andar 3</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #480000;"></div>
+              <span>Frisa</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+
+          <div class="fila-datos-mobile-orbita">
+            <div class="item-sector-mobile-orbita">
+              <div class="color-sector-mobile-orbita" style="background: #480000;"></div>
+              <span>Frisa</span>
+            </div>
+            <div class="fila-precios-mobile-orbita">
+              <div class="celda-precio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+              <div class="celda-precio-mobile-orbita celda-servicio-mobile-orbita"><span>RS1.100,00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer mobile -->
+      <div class="footer-mobile-orbita">
+        <div class="logo-ticketmaster-mobile-orbita">
+          <img src="https://prod-assets.tmlat.com/ticketmaster_ededff4045.svg" alt="Ticketmaster">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

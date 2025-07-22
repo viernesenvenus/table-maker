@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Interface - Simplified</title>
+  <style>
+    /* CSS Reset básico */
+    .tmpe-container * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    
+    .tmpe-container {
+      width: 800px !important;
+      max-width: 800px !important;
+      margin: 0 auto !important;
+      background: #FAFBFC;
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    @media (max-width: 800px) {
+      .tmpe-container {
+        width: 100% !important;
+      }
+    }
+
+    /* Tarjetas de ticket - Desktop */
+    .tmpe-ticket-item {
+      display: flex;
+      align-items: center;
+      padding: 20px 24px;
+      background: #fff;
+      border-bottom: 1px solid #D6D6D6;
+      position: relative;
+      justify-content: space-between;
+      gap: 24px;
+      transition: background-color 0.2s ease;
+    }
+
+    .tmpe-logo-container {
+      width: 56px;
+      height: 56px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tmpe-logo-interbank {
+      background: #1A1A1A;
+    }
+
+    .tmpe-logo-ticketmaster {
+      background: #0744BD;
+    }
+
+    .tmpe-logo-img {
+      width: 65%;
+      height: 65%;
+      object-fit: contain;
+    }
+
+    .tmpe-info-container {
+      flex: 1;
+    }
+
+    /* Tipografía directamente aplicada con alta especificidad */
+    .tmpe-container .tmpe-ticket-title {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #262626;
+      letter-spacing: 0.4px;
+      line-height: 20px; /* 100% */
+    }
+
+    .tmpe-container .tmpe-date-text {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #7D7D7D;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.32px; /* 2% de 16px */
+      line-height: 20px; /* 125% */
+    }
+
+    .tmpe-status-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tmpe-container .tmpe-status-badge {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #D6D6D6;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      height: 22px;
+      letter-spacing: 0.24px; /* 2% de 12px */
+      line-height: 20px; /* 167% */
+    }
+
+    .tmpe-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .tmpe-dot-available {
+      background: #048851;
+    }
+
+    .tmpe-dot-soon {
+      background: #646464;
+    }
+
+    /* Estilo de enlace según diseño Figma */
+    .tmpe-container .tmpe-link-details {
+      font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #024DDF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 16px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-left: auto;
+      text-decoration: none;
+      letter-spacing: 0.32px; /* 2% de 16px */
+      line-height: 24px; /* 150% */
+      height: 48px;
+      min-width: 150px;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .tmpe-link-mobile {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #024DDF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Default state - Desktop first */
+    .tmpe-desktop-view {
+      display: block;
+    }
+    
+    .tmpe-mobile-view {
+      display: none;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .tmpe-desktop-view {
+        display: none;
+      }
+      
+      .tmpe-mobile-view {
+        display: block;
+        box-shadow: 0px 1px 4px 0px rgba(18, 18, 18, 0.15);
+      }
+      
+      .tmpe-ticket-item {
+        padding: 0;
+        gap: 0;
+        align-items: stretch;
+      }
+      
+      .tmpe-ticket-link {
+        display: flex;
+        width: 100%;
+        padding: 20px 12px;
+        gap: 16px;
+        align-items: flex-start;
+        text-decoration: none !important;
+        color: inherit;
+        cursor: pointer;
+      }
+      
+      .tmpe-logo-container {
+        width: 42px;
+        height: 40px;
+        margin-right: 0;
+        border-radius: 2.68px;
+        margin-top: 0;
+        align-self: flex-start;
+      }
+      
+      .tmpe-container .tmpe-ticket-title {
+        font-size: 18px;
+        line-height: 20px;
+        letter-spacing: 0.32px;
+        color: #121212;
+        margin-bottom: 2px;
+      }
+
+      .tmpe-container .tmpe-date-text {
+        font-size: 14px;
+        margin-left: 0;
+        line-height: 20px;
+        letter-spacing: 0.28px;
+        color: #828282;
+      }
+      
+      .tmpe-status-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .tmpe-container .tmpe-status-badge {
+        font-size: 12px;
+        letter-spacing: 0.24px; /* 2% de 12px */
+        line-height: 20px; /* 167% */
+        color: #121212;
+      }
+
+      .tmpe-link-mobile {
+        width: 36px;
+        height: 36px;
+        background: #024DDF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-start;
+        margin-top: 0;
+      }
+    }
+
+    /* Desktop hover effect */
+    @media (min-width: 769px) {
+      .tmpe-ticket-item:hover {
+        background-color: #F6F6F6;
+      }
+      
+      .tmpe-link-details:hover {
+        background-color: #0035A0;
+      }
+    }
+    
+    /* Mobile hover/active effects */
+    @media (max-width: 768px) {
+      .tmpe-ticket-link:hover, 
+      .tmpe-ticket-link:active {
+        background-color: #F6F6F6;
+      }
+      
+      .tmpe-ticket-link:hover .tmpe-link-mobile, 
+      .tmpe-ticket-link:active .tmpe-link-mobile {
+        background-color: #0035A0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="tmpe-container">
+  <!-- Vista Desktop -->
+  <div class="tmpe-desktop-view">
+    <!-- Ticket 1 -->
+    <div class="tmpe-ticket-item">
+      <div class="tmpe-logo-container tmpe-logo-interbank">
+        <img class="tmpe-logo-img" src="https://prod-assets.tmlat.com/interbank_svg_f81dc84322.svg" alt="Interbank">
+      </div>
+      <div class="tmpe-info-container">
+        <h2 class="tmpe-ticket-title">VENTA INTERBANK</h2>
+        <div class="tmpe-status-container">
+          <div class="tmpe-status-badge">
+            <span class="tmpe-status-dot tmpe-dot-available"></span>
+            <span>DISPONIBLE</span>
+          </div>
+          <span class="tmpe-date-text">Inicio de venta: 01/04 • 14:30</span>
+        </div>
+      </div>
+      <a href="https://www.ticketmaster.com.pe/event/venta-interbank" class="tmpe-link-details">
+        Ver Detalles
+        <svg width="20" height="20" viewBox="0 0 20 20">
+          <polyline points="7 5 13 10 7 15" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    
+    <!-- Ticket 2 -->
+    <div class="tmpe-ticket-item">
+      <div class="tmpe-logo-container tmpe-logo-ticketmaster">
+        <img class="tmpe-logo-img" src="https://prod-assets.tmlat.com/T_9318699a9f.svg" alt="Ticketmaster">
+      </div>
+      <div class="tmpe-info-container">
+        <h2 class="tmpe-ticket-title">OTRAS TARIFAS Y PROMOCIONES</h2>
+        <div class="tmpe-status-container">
+          <div class="tmpe-status-badge">
+            <span class="tmpe-status-dot tmpe-dot-available"></span>
+            <span>DISPONIBLE</span>
+          </div>
+          <span class="tmpe-date-text">Inicio de venta: 01/04 • 14:30</span>
+        </div>
+      </div>
+      <a href="https://www.ticketmaster.com.pe/event/otras-tarifas" class="tmpe-link-details">
+        Ver Detalles
+        <svg width="20" height="20" viewBox="0 0 20 20">
+          <polyline points="7 5 13 10 7 15" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Vista Mobile -->
+  <div class="tmpe-mobile-view">
+    <!-- Ticket 1 -->
+    <div class="tmpe-ticket-item">
+      <a href="https://www.ticketmaster.com.pe/event/venta-interbank" class="tmpe-ticket-link">
+        <div class="tmpe-logo-container tmpe-logo-interbank">
+          <img class="tmpe-logo-img" src="https://prod-assets.tmlat.com/interbank_svg_f81dc84322.svg" alt="Interbank">
+        </div>
+        <div class="tmpe-info-container">
+          <h2 class="tmpe-ticket-title">VENTA INTERBANK</h2>
+          <div class="tmpe-status-container">
+            <span class="tmpe-date-text">Inicio de venta 01/04 • 14:30</span>
+            <div class="tmpe-status-badge">
+              <span class="tmpe-status-dot tmpe-dot-available"></span>
+              <span>DISPONIBLE</span>
+            </div>
+          </div>
+        </div>
+        <div class="tmpe-link-mobile">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6L15 12L9 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+    
+    <!-- Ticket 2 -->
+    <div class="tmpe-ticket-item">
+      <a href="https://www.ticketmaster.com.pe/event/otras-tarifas" class="tmpe-ticket-link">
+        <div class="tmpe-logo-container tmpe-logo-ticketmaster">
+          <img class="tmpe-logo-img" src="https://prod-assets.tmlat.com/T_9318699a9f.svg" alt="Ticketmaster">
+        </div>
+        <div class="tmpe-info-container">
+          <h2 class="tmpe-ticket-title">OTRAS TARIFAS Y PROMOCIONES</h2>
+          <div class="tmpe-status-container">
+            <span class="tmpe-date-text">Inicio de venta 01/04 • 14:30</span>
+            <div class="tmpe-status-badge">
+              <span class="tmpe-status-dot tmpe-dot-available"></span>
+              <span>DISPONIBLE</span>
+            </div>
+          </div>
+        </div>
+        <div class="tmpe-link-mobile">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6L15 12L9 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html> 

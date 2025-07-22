@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS de Eventos - Tabla de Precios Dinámicas</title>
+    <style>
+        /* CSS Reset y variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: hsl(0, 0%, 100%);
+            --foreground: hsl(222.2, 84%, 4.9%);
+            --card: hsl(0, 0%, 100%);
+            --card-foreground: hsl(222.2, 84%, 4.9%);
+            --primary: hsl(222.2, 47.4%, 11.2%);
+            --primary-foreground: hsl(210, 40%, 98%);
+            --secondary: hsl(210, 40%, 96.1%);
+            --secondary-foreground: hsl(222.2, 47.4%, 11.2%);
+            --muted: hsl(210, 40%, 96.1%);
+            --muted-foreground: hsl(215.4, 16.3%, 46.9%);
+            --accent: hsl(210, 40%, 96.1%);
+            --accent-foreground: hsl(222.2, 47.4%, 11.2%);
+            --destructive: hsl(0, 84.2%, 60.2%);
+            --destructive-foreground: hsl(210, 40%, 98%);
+            --border: hsl(214.3, 31.8%, 91.4%);
+            --input: hsl(214.3, 31.8%, 91.4%);
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: hsl(222.2, 84%, 4.9%);
+            --foreground: hsl(210, 40%, 98%);
+            --card: hsl(222.2, 84%, 4.9%);
+            --card-foreground: hsl(210, 40%, 98%);
+            --primary: hsl(210, 40%, 98%);
+            --primary-foreground: hsl(222.2, 47.4%, 11.2%);
+            --secondary: hsl(217.2, 32.6%, 17.5%);
+            --secondary-foreground: hsl(210, 40%, 98%);
+            --muted: hsl(217.2, 32.6%, 17.5%);
+            --muted-foreground: hsl(215, 20.2%, 65.1%);
+            --accent: hsl(217.2, 32.6%, 17.5%);
+            --accent-foreground: hsl(210, 40%, 98%);
+            --destructive: hsl(0, 62.8%, 30.6%);
+            --destructive-foreground: hsl(210, 40%, 98%);
+            --border: hsl(217.2, 32.6%, 17.5%);
+            --input: hsl(217.2, 32.6%, 17.5%);
+        }
+
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            line-height: 1.5;
+        }
+
+        .container {
+            min-height: 100vh;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Card styles */
+        .card {
+            background: var(--card);
+            color: var(--card-foreground);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 0;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--accent-foreground);
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--foreground);
+        }
+
+        .btn-ghost:hover {
+            background: var(--accent);
+            color: var(--accent-foreground);
+        }
+
+        /* Input styles */
+        .input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--background);
+            color: var(--foreground);
+            font-size: 0.875rem;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px hsla(var(--primary), 0.2);
+        }
+
+        .input-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Label styles */
+        .label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        /* Grid styles */
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        /* Utility classes */
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .space-y-2 > * + * {
+            margin-top: 0.5rem;
+        }
+
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+
+        .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-muted-foreground {
+            color: var(--muted-foreground);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .bg-muted {
+            background: var(--muted);
+        }
+
+        .bg-muted\/30 {
+            background: hsla(var(--muted), 0.3);
+        }
+
+        .bg-muted\/50 {
+            background: hsla(var(--muted), 0.5);
+        }
+
+        .hover\:bg-muted\/50:hover {
+            background: hsla(var(--muted), 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .max-w-2xl {
+            max-width: 42rem;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .p-8 {
+            padding: 2rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .border-2 {
+            border-width: 2px;
+        }
+
+        .border-dashed {
+            border-style: dashed;
+        }
+
+        .opacity-50 {
+            opacity: 0.5;
+        }
+
+        .overflow-x-auto {
+            overflow-x: auto;
+        }
+
+        /* Table styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border);
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .table th {
+            background: var(--muted);
+            font-weight: 600;
+        }
+
+        .table tr:hover {
+            background: var(--muted);
+            background: hsla(var(--muted), 0.5);
+        }
+
+        /* Icon placeholder */
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            display: inline-block;
+            fill: currentColor;
+        }
+
+        .icon-lg {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Image upload area */
+        .image-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: var(--muted-foreground);
+        }
+
+        .venue-image {
+            width: 100%;
+            max-width: 32rem;
+            margin: 0 auto;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            border-color: var(--destructive);
+            color: var(--destructive);
+        }
+
+        /* Sold out cell styles */
+        .cell-sold-out {
+            background: var(--muted) !important;
+            color: var(--muted-foreground) !important;
+            position: relative;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .cell-sold-out::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.1) 2px,
+                rgba(0,0,0,0.1) 4px
+            );
+            pointer-events: none;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        /* Cell click styles */
+        .cell-clickable {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .cell-clickable:hover {
+            background: var(--accent) !important;
+        }
+
+        /* Preview box styles */
+        .preview-box {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            background: var(--muted);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .preview-normal {
+            color: var(--primary);
+        }
+
+        .preview-sold-out {
+            background: var(--muted);
+            color: var(--muted-foreground);
+            text-decoration: line-through;
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .preview-sold-out::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.1) 2px,
+                rgba(0,0,0,0.1) 4px
+            );
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="space-y-6">
+            <!-- Header con controles -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex justify-between items-center">
+                        <h1 class="card-title text-2xl font-bold">
+                            CMS de Eventos - <span id="event-title-display">Nuevo Evento</span>
+                        </h1>
+                        <div class="flex gap-2">
+                            <button id="toggle-edit-btn" class="btn btn-primary">Vista Previa</button>
+                            <button id="download-json-btn" class="btn btn-outline">
+                                ⬇️ Descargar JSON
+                            </button>
+                            <label class="btn btn-outline" for="load-json-input">
+                                ⬆️ Cargar JSON
+                                <input type="file" id="load-json-input" accept=".json" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información General -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        🏆 <span id="info-section-title">Información General</span>
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <!-- Vista de edición -->
+                    <div id="info-edit-view" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="label" for="event-title">Título del Evento</label>
+                                <input id="event-title" class="input" placeholder="Nombre del evento" value="Nuevo Evento">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="label" for="event-date">Fecha del Evento</label>
+                                <input id="event-date" class="input" type="datetime-local">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="label" for="event-venue">Lugar del Evento</label>
+                                <input id="event-venue" class="input" placeholder="Nombre del venue">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="label" for="event-promoter">Promotor del Evento</label>
+                                <input id="event-promoter" class="input" placeholder="Nombre del promotor">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vista previa -->
+                    <div id="info-preview-view" class="hidden space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <h3 id="preview-title" class="text-3xl font-bold text-primary">Nuevo Evento</h3>
+                                <div class="flex items-center gap-2 text-muted-foreground">
+                                    📅 <span id="preview-date">Fecha por definir</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-muted-foreground">
+                                    📍 <span id="preview-venue">Lugar por definir</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-muted-foreground">
+                                    👤 <span id="preview-promoter">Promotor por definir</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuración de Estados -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        ⚙️ <span id="config-section-title">Configuración de Estados</span>
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <!-- Vista de edición -->
+                    <div id="config-edit-view" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="label" for="sold-out-text">Texto para Estado Agotado</label>
+                                <input id="sold-out-text" class="input" placeholder="Agotado" value="Agotado">
+                                <p class="text-sm text-muted-foreground">Personaliza el texto según tu país (ej: "Esgotado", "Sold Out")</p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="label">Vista Previa del Estado</label>
+                                <div class="space-y-2">
+                                    <div class="preview-box preview-normal" id="price-preview-normal">$50.000</div>
+                                    <div class="preview-box preview-sold-out" id="price-preview-sold-out">Agotado</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vista previa -->
+                    <div id="config-preview-view" class="hidden space-y-4">
+                        <div class="text-muted-foreground">
+                            <p><strong>Texto de agotado configurado:</strong> <span id="preview-sold-out-text">Agotado</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estructura de Precios -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        💰 <span id="price-section-title">Estructura de Precios</span>
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <!-- Vista de edición -->
+                    <div id="price-edit-view" class="space-y-4">
+                        <div class="flex gap-2">
+                            <button id="add-column-btn" class="btn btn-outline btn-sm">
+                                ➕ Agregar Columna
+                            </button>
+                            <button id="add-row-btn" class="btn btn-outline btn-sm">
+                                ➕ Agregar Fila
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="price-table-edit" class="table">
+                                <thead>
+                                    <tr id="table-header-edit">
+                                        <th class="bg-muted">
+                                            <span class="text-sm font-medium">Sectores</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body-edit">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Vista previa -->
+                    <div id="price-preview-view" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table id="price-table-preview" class="table">
+                                <thead>
+                                    <tr id="table-header-preview">
+                                        <th class="bg-muted font-semibold text-left">Sectores</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body-preview">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Imagen del Venue -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        🖼️ Imagen del Venue
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <!-- Vista de edición -->
+                    <div id="image-edit-view" class="space-y-4">
+                        <div class="flex gap-2">
+                            <button id="upload-image-btn" class="btn btn-outline">
+                                ⬆️ Subir Imagen
+                            </button>
+                            <button id="remove-image-btn" class="btn btn-outline hidden">
+                                ❌ Eliminar Imagen
+                            </button>
+                        </div>
+                        <input type="file" id="image-input" accept="image/*" class="hidden">
+                        
+                        <div id="image-preview-container">
+                            <div id="image-upload-placeholder" class="image-upload-area">
+                                <div class="icon icon-lg mb-4 mx-auto">🖼️</div>
+                                <p>Haz clic en "Subir Imagen" para añadir una imagen del venue</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vista previa -->
+                    <div id="image-preview-view" class="hidden">
+                        <div id="image-preview-readonly">
+                            <div class="text-center py-8 text-muted-foreground">
+                                <div class="icon icon-lg mb-2 mx-auto opacity-50">🖼️</div>
+                                <p>Sin imagen del venue</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
+    <!-- Cell Edit Modal -->
+    <div id="cell-edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold">Editar Celda de Precio</h3>
+                    <button id="close-modal-btn" class="btn btn-ghost btn-sm">✕</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="label">Sector: <span id="modal-sector-name"></span></label>
+                        <label class="label">Categoría: <span id="modal-category-name"></span></label>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="label" for="modal-price-input">Precio</label>
+                                <input id="modal-price-input" class="input" placeholder="$0" type="text">
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <input id="modal-sold-out-checkbox" type="checkbox" class="w-4 h-4">
+                                    <label class="label" for="modal-sold-out-checkbox">Marcar como agotado</label>
+                                </div>
+                            </div>
+
+                            <div id="custom-sold-out-section" class="space-y-2 hidden">
+                                <label class="label" for="modal-custom-sold-out">Texto personalizado (opcional)</label>
+                                <input id="modal-custom-sold-out" class="input" placeholder="Usar texto por defecto">
+                                <p class="text-sm text-muted-foreground">Déjalo vacío para usar el texto configurado globalmente</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="label">Vista Previa</label>
+                            <div class="preview-box" id="modal-cell-preview">$0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 justify-end">
+                    <button id="modal-cancel-btn" class="btn btn-outline">Cancelar</button>
+                    <button id="modal-save-btn" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado de la aplicación
+        let appState = {
+            info: {
+                title: 'Nuevo Evento',
+                date: '',
+                venue: '',
+                promoter: ''
+            },
+            priceTable: {
+                columns: ['VIP', 'General'],
+                rows: ['Sector A', 'Sector B'],
+                cells: []
+            },
+            config: {
+                soldOutText: 'Agotado'
+            },
+            venueImage: null,
+            isEditing: true
+        };
+
+        // Estado del modal
+        let modalState = {
+            isOpen: false,
+            currentCell: { rowIndex: -1, colIndex: -1 }
+        };
+
+        // Elementos del DOM
+        const elements = {
+            toggleEditBtn: document.getElementById('toggle-edit-btn'),
+            downloadJsonBtn: document.getElementById('download-json-btn'),
+            loadJsonInput: document.getElementById('load-json-input'),
+            eventTitleDisplay: document.getElementById('event-title-display'),
+            
+            // Info section
+            infoSectionTitle: document.getElementById('info-section-title'),
+            infoEditView: document.getElementById('info-edit-view'),
+            infoPreviewView: document.getElementById('info-preview-view'),
+            eventTitle: document.getElementById('event-title'),
+            eventDate: document.getElementById('event-date'),
+            eventVenue: document.getElementById('event-venue'),
+            eventPromoter: document.getElementById('event-promoter'),
+            previewTitle: document.getElementById('preview-title'),
+            previewDate: document.getElementById('preview-date'),
+            previewVenue: document.getElementById('preview-venue'),
+            previewPromoter: document.getElementById('preview-promoter'),
+
+            // Config section
+            configSectionTitle: document.getElementById('config-section-title'),
+            configEditView: document.getElementById('config-edit-view'),
+            configPreviewView: document.getElementById('config-preview-view'),
+            soldOutText: document.getElementById('sold-out-text'),
+            pricePreviewNormal: document.getElementById('price-preview-normal'),
+            pricePreviewSoldOut: document.getElementById('price-preview-sold-out'),
+            previewSoldOutText: document.getElementById('preview-sold-out-text'),
+
+            // Price table section
+            priceSectionTitle: document.getElementById('price-section-title'),
+            priceEditView: document.getElementById('price-edit-view'),
+            pricePreviewView: document.getElementById('price-preview-view'),
+            addColumnBtn: document.getElementById('add-column-btn'),
+            addRowBtn: document.getElementById('add-row-btn'),
+            tableHeaderEdit: document.getElementById('table-header-edit'),
+            tableBodyEdit: document.getElementById('table-body-edit'),
+            tableHeaderPreview: document.getElementById('table-header-preview'),
+            tableBodyPreview: document.getElementById('table-body-preview'),
+
+            // Image section
+            imageEditView: document.getElementById('image-edit-view'),
+            imagePreviewView: document.getElementById('image-preview-view'),
+            uploadImageBtn: document.getElementById('upload-image-btn'),
+            removeImageBtn: document.getElementById('remove-image-btn'),
+            imageInput: document.getElementById('image-input'),
+            imagePreviewContainer: document.getElementById('image-preview-container'),
+            imageUploadPlaceholder: document.getElementById('image-upload-placeholder'),
+            imagePreviewReadonly: document.getElementById('image-preview-readonly'),
+
+            // Modal elements
+            cellEditModal: document.getElementById('cell-edit-modal'),
+            closeModalBtn: document.getElementById('close-modal-btn'),
+            modalSectorName: document.getElementById('modal-sector-name'),
+            modalCategoryName: document.getElementById('modal-category-name'),
+            modalPriceInput: document.getElementById('modal-price-input'),
+            modalSoldOutCheckbox: document.getElementById('modal-sold-out-checkbox'),
+            modalCustomSoldOut: document.getElementById('modal-custom-sold-out'),
+            customSoldOutSection: document.getElementById('custom-sold-out-section'),
+            modalCellPreview: document.getElementById('modal-cell-preview'),
+            modalCancelBtn: document.getElementById('modal-cancel-btn'),
+            modalSaveBtn: document.getElementById('modal-save-btn')
+        };
+
+        // Funciones de utilidad
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+            toast.innerHTML = `
+                <div class="font-medium">${type === 'error' ? 'Error' : 'Éxito'}</div>
+                <div class="text-sm">${message}</div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateEventTitleDisplay() {
+            elements.eventTitleDisplay.textContent = appState.info.title || 'Nuevo Evento';
+        }
+
+        // Funciones de la tabla de precios
+        function getCellData(rowIndex, colIndex) {
+            const cell = appState.priceTable.cells.find(
+                cell => cell.rowIndex === rowIndex && cell.colIndex === colIndex
+            );
+            return cell || { 
+                rowIndex, 
+                colIndex, 
+                price: '', 
+                isSoldOut: false, 
+                customSoldOutText: '' 
+            };
+        }
+
+        function setCellData(rowIndex, colIndex, data) {
+            const existingIndex = appState.priceTable.cells.findIndex(
+                cell => cell.rowIndex === rowIndex && cell.colIndex === colIndex
+            );
+
+            const cellData = {
+                rowIndex,
+                colIndex,
+                price: data.price || '',
+                isSoldOut: data.isSoldOut || false,
+                customSoldOutText: data.customSoldOutText || ''
+            };
+
+            if (existingIndex >= 0) {
+                appState.priceTable.cells[existingIndex] = cellData;
+            } else {
+                appState.priceTable.cells.push(cellData);
+            }
+        }
+
+        function getCellDisplayText(cellData) {
+            if (cellData.isSoldOut) {
+                return cellData.customSoldOutText || appState.config.soldOutText;
+            }
+            return cellData.price || '';
+        }
+
+        function getCellValue(rowIndex, colIndex) {
+            const cellData = getCellData(rowIndex, colIndex);
+            return cellData.price;
+        }
+
+        function setCellValue(rowIndex, colIndex, value) {
+            const cellData = getCellData(rowIndex, colIndex);
+            cellData.price = value;
+            setCellData(rowIndex, colIndex, cellData);
+        }
+
+        function addColumn() {
+            const newColumn = `Columna ${appState.priceTable.columns.length + 1}`;
+            appState.priceTable.columns.push(newColumn);
+            renderPriceTable();
+        }
+
+        function removeColumn(index) {
+            if (appState.priceTable.columns.length <= 1) return;
+            
+            appState.priceTable.columns.splice(index, 1);
+            appState.priceTable.cells = appState.priceTable.cells
+                .filter(cell => cell.colIndex !== index)
+                .map(cell => ({
+                    ...cell,
+                    colIndex: cell.colIndex > index ? cell.colIndex - 1 : cell.colIndex
+                }));
+            renderPriceTable();
+        }
+
+        function addRow() {
+            const newRow = `Fila ${appState.priceTable.rows.length + 1}`;
+            appState.priceTable.rows.push(newRow);
+            renderPriceTable();
+        }
+
+        function removeRow(index) {
+            if (appState.priceTable.rows.length <= 1) return;
+            
+            appState.priceTable.rows.splice(index, 1);
+            appState.priceTable.cells = appState.priceTable.cells
+                .filter(cell => cell.rowIndex !== index)
+                .map(cell => ({
+                    ...cell,
+                    rowIndex: cell.rowIndex > index ? cell.rowIndex - 1 : cell.rowIndex
+                }));
+            renderPriceTable();
+        }
+
+        function renderPriceTable() {
+            if (appState.isEditing) {
+                renderEditTable();
+            } else {
+                renderPreviewTable();
+            }
+        }
+
+        function renderEditTable() {
+            // Header
+            elements.tableHeaderEdit.innerHTML = `
+                <th class="bg-muted">
+                    <span class="text-sm font-medium">Sectores</span>
+                </th>
+            `;
+
+            appState.priceTable.columns.forEach((column, index) => {
+                const th = document.createElement('th');
+                th.className = 'bg-muted';
+                th.innerHTML = `
+                    <div class="flex items-center gap-1">
+                        <input 
+                            type="text" 
+                            value="${column}" 
+                            class="input input-sm text-center" 
+                            placeholder="Título columna"
+                            onchange="updateColumnTitle(${index}, this.value)"
+                        />
+                        <button 
+                            onclick="removeColumn(${index})" 
+                            class="btn btn-ghost btn-sm"
+                            ${appState.priceTable.columns.length <= 1 ? 'disabled' : ''}
+                        >
+                            ➖
+                        </button>
+                    </div>
+                `;
+                elements.tableHeaderEdit.appendChild(th);
+            });
+
+            // Body
+            elements.tableBodyEdit.innerHTML = '';
+            appState.priceTable.rows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                
+                // Row header
+                const rowTh = document.createElement('td');
+                rowTh.className = 'bg-muted/30';
+                rowTh.innerHTML = `
+                    <div class="flex items-center gap-1">
+                        <input 
+                            type="text" 
+                            value="${row}" 
+                            class="input input-sm" 
+                            placeholder="Nombre sector"
+                            onchange="updateRowTitle(${rowIndex}, this.value)"
+                        />
+                        <button 
+                            onclick="removeRow(${rowIndex})" 
+                            class="btn btn-ghost btn-sm"
+                            ${appState.priceTable.rows.length <= 1 ? 'disabled' : ''}
+                        >
+                            ➖
+                        </button>
+                    </div>
+                `;
+                tr.appendChild(rowTh);
+
+                // Cells
+                appState.priceTable.columns.forEach((_, colIndex) => {
+                    const td = document.createElement('td');
+                    const cellData = getCellData(rowIndex, colIndex);
+                    const displayText = getCellDisplayText(cellData);
+                    
+                    td.innerHTML = `
+                        <div class="flex items-center gap-1">
+                            <input 
+                                type="text" 
+                                value="${cellData.price}" 
+                                class="input input-sm text-center flex-1" 
+                                placeholder="$0"
+                                onchange="setCellValue(${rowIndex}, ${colIndex}, this.value)"
+                                ${cellData.isSoldOut ? 'disabled' : ''}
+                            />
+                            <button 
+                                onclick="openCellEditModal(${rowIndex}, ${colIndex})" 
+                                class="btn btn-ghost btn-sm"
+                                title="Editar celda"
+                            >
+                                ⚙️
+                            </button>
+                        </div>
+                    `;
+                    
+                    if (cellData.isSoldOut) {
+                        td.classList.add('cell-sold-out');
+                    }
+                    
+                    tr.appendChild(td);
+                });
+
+                elements.tableBodyEdit.appendChild(tr);
+            });
+        }
+
+        function renderPreviewTable() {
+            // Header
+            elements.tableHeaderPreview.innerHTML = `
+                <th class="bg-muted font-semibold text-left">Sectores</th>
+            `;
+
+            appState.priceTable.columns.forEach(column => {
+                const th = document.createElement('th');
+                th.className = 'bg-muted font-semibold text-center';
+                th.textContent = column;
+                elements.tableHeaderPreview.appendChild(th);
+            });
+
+            // Body
+            elements.tableBodyPreview.innerHTML = '';
+            appState.priceTable.rows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-muted/50';
+                
+                // Row header
+                const rowTd = document.createElement('td');
+                rowTd.className = 'font-medium bg-muted/30';
+                rowTd.textContent = row;
+                tr.appendChild(rowTd);
+
+                // Cells
+                appState.priceTable.columns.forEach((_, colIndex) => {
+                    const td = document.createElement('td');
+                    td.className = 'text-center cell-clickable';
+                    const cellData = getCellData(rowIndex, colIndex);
+                    const displayText = getCellDisplayText(cellData);
+                    
+                    if (cellData.isSoldOut) {
+                        td.classList.add('cell-sold-out');
+                        td.innerHTML = `<span class="font-semibold">${displayText}</span>`;
+                    } else {
+                        td.innerHTML = `<span class="font-semibold text-primary">${displayText || '-'}</span>`;
+                    }
+                    
+                    td.addEventListener('click', () => openCellEditModal(rowIndex, colIndex));
+                    tr.appendChild(td);
+                });
+
+                elements.tableBodyPreview.appendChild(tr);
+            });
+        }
+
+        function updateColumnTitle(index, title) {
+            appState.priceTable.columns[index] = title;
+        }
+
+        function updateRowTitle(index, title) {
+            appState.priceTable.rows[index] = title;
+        }
+
+        // Funciones del modal de edición de celdas
+        function openCellEditModal(rowIndex, colIndex) {
+            if (!appState.isEditing) return;
+            
+            modalState.isOpen = true;
+            modalState.currentCell = { rowIndex, colIndex };
+            
+            const cellData = getCellData(rowIndex, colIndex);
+            const rowName = appState.priceTable.rows[rowIndex] || `Fila ${rowIndex + 1}`;
+            const colName = appState.priceTable.columns[colIndex] || `Columna ${colIndex + 1}`;
+            
+            // Populate modal
+            elements.modalSectorName.textContent = rowName;
+            elements.modalCategoryName.textContent = colName;
+            elements.modalPriceInput.value = cellData.price || '';
+            elements.modalSoldOutCheckbox.checked = cellData.isSoldOut;
+            elements.modalCustomSoldOut.value = cellData.customSoldOutText || '';
+            
+            updateModalPreview();
+            toggleCustomSoldOutSection();
+            
+            elements.cellEditModal.classList.add('show');
+        }
+
+        function closeCellEditModal() {
+            modalState.isOpen = false;
+            modalState.currentCell = { rowIndex: -1, colIndex: -1 };
+            elements.cellEditModal.classList.remove('show');
+        }
+
+        function saveCellChanges() {
+            const { rowIndex, colIndex } = modalState.currentCell;
+            const price = elements.modalPriceInput.value;
+            const isSoldOut = elements.modalSoldOutCheckbox.checked;
+            const customSoldOutText = elements.modalCustomSoldOut.value;
+            
+            setCellData(rowIndex, colIndex, {
+                price,
+                isSoldOut,
+                customSoldOutText
+            });
+            
+            renderPriceTable();
+            closeCellEditModal();
+        }
+
+        function updateModalPreview() {
+            const price = elements.modalPriceInput.value;
+            const isSoldOut = elements.modalSoldOutCheckbox.checked;
+            const customSoldOutText = elements.modalCustomSoldOut.value;
+            
+            const preview = elements.modalCellPreview;
+            
+            if (isSoldOut) {
+                const displayText = customSoldOutText || appState.config.soldOutText;
+                preview.textContent = displayText;
+                preview.className = 'preview-box preview-sold-out';
+            } else {
+                preview.textContent = price || '$0';
+                preview.className = 'preview-box preview-normal';
+            }
+        }
+
+        function toggleCustomSoldOutSection() {
+            const isChecked = elements.modalSoldOutCheckbox.checked;
+            if (isChecked) {
+                elements.customSoldOutSection.classList.remove('hidden');
+            } else {
+                elements.customSoldOutSection.classList.add('hidden');
+            }
+        }
+
+        // Funciones de configuración
+        function updateSoldOutText() {
+            appState.config.soldOutText = elements.soldOutText.value || 'Agotado';
+            elements.pricePreviewSoldOut.textContent = appState.config.soldOutText;
+            if (modalState.isOpen) {
+                updateModalPreview();
+            }
+        }
+
+        function toggleEditMode() {
+            appState.isEditing = !appState.isEditing;
+            updateUI();
+        }
+
+        function updateUI() {
+            // Toggle button text
+            elements.toggleEditBtn.textContent = appState.isEditing ? 'Vista Previa' : 'Editar';
+            elements.toggleEditBtn.className = appState.isEditing ? 'btn btn-primary' : 'btn btn-outline';
+
+            // Section titles
+            elements.infoSectionTitle.textContent = appState.isEditing ? 'Información General' : 'Información del Evento';
+            elements.configSectionTitle.textContent = appState.isEditing ? 'Configuración de Estados' : 'Configuración';
+            elements.priceSectionTitle.textContent = appState.isEditing ? 'Estructura de Precios' : 'Tabla de Precios';
+
+            // Show/hide views
+            if (appState.isEditing) {
+                elements.infoEditView.classList.remove('hidden');
+                elements.infoPreviewView.classList.add('hidden');
+                elements.configEditView.classList.remove('hidden');
+                elements.configPreviewView.classList.add('hidden');
+                elements.priceEditView.classList.remove('hidden');
+                elements.pricePreviewView.classList.add('hidden');
+                elements.imageEditView.classList.remove('hidden');
+                elements.imagePreviewView.classList.add('hidden');
+            } else {
+                elements.infoEditView.classList.add('hidden');
+                elements.infoPreviewView.classList.remove('hidden');
+                elements.configEditView.classList.add('hidden');
+                elements.configPreviewView.classList.remove('hidden');
+                elements.priceEditView.classList.add('hidden');
+                elements.pricePreviewView.classList.remove('hidden');
+                elements.imageEditView.classList.add('hidden');
+                elements.imagePreviewView.classList.remove('hidden');
+                updatePreviewValues();
+            }
+
+            renderPriceTable();
+        }
+
+        function updatePreviewValues() {
+            elements.previewTitle.textContent = appState.info.title || 'Nuevo Evento';
+            elements.previewDate.textContent = appState.info.date ? 
+                new Date(appState.info.date).toLocaleString('es-ES') : 'Fecha por definir';
+            elements.previewVenue.textContent = appState.info.venue || 'Lugar por definir';
+            elements.previewPromoter.textContent = appState.info.promoter || 'Promotor por definir';
+
+            // Update config preview
+            elements.previewSoldOutText.textContent = appState.config.soldOutText;
+
+            // Update image preview
+            if (appState.venueImage) {
+                elements.imagePreviewReadonly.innerHTML = `
+                    <div class="relative">
+                        <img src="${appState.venueImage}" alt="Imagen del venue" class="venue-image">
+                    </div>
+                `;
+            } else {
+                elements.imagePreviewReadonly.innerHTML = `
+                    <div class="text-center py-8 text-muted-foreground">
+                        <div class="icon icon-lg mb-2 mx-auto opacity-50">🖼️</div>
+                        <p>Sin imagen del venue</p>
+                    </div>
+                `;
+            }
+        }
+
+        function saveToJSON() {
+            const eventData = {
+                info: appState.info,
+                priceTable: appState.priceTable,
+                config: appState.config,
+                venueImage: appState.venueImage
+            };
+
+            const dataStr = JSON.stringify(eventData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `evento-${appState.info.title.toLowerCase().replace(/\s+/g, '-')}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            showToast('El archivo JSON se ha descargado correctamente.');
+        }
+
+        function loadFromJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const eventData = JSON.parse(e.target.result);
+                    appState.info = eventData.info || appState.info;
+                    appState.priceTable = eventData.priceTable || appState.priceTable;
+                    appState.config = eventData.config || appState.config;
+                    appState.venueImage = eventData.venueImage || null;
+
+                    // Update form values
+                    elements.eventTitle.value = appState.info.title;
+                    elements.eventDate.value = appState.info.date;
+                    elements.eventVenue.value = appState.info.venue;
+                    elements.eventPromoter.value = appState.info.promoter;
+                    elements.soldOutText.value = appState.config.soldOutText;
+
+                    updateEventTitleDisplay();
+                    updateImageDisplay();
+                    updateSoldOutText();
+                    renderPriceTable();
+
+                    showToast('Los datos se han cargado correctamente.');
+                } catch (error) {
+                    showToast('El archivo JSON no es válido.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function updateImageDisplay() {
+            if (appState.venueImage) {
+                elements.imagePreviewContainer.innerHTML = `
+                    <div class="relative">
+                        <img src="${appState.venueImage}" alt="Preview del venue" class="venue-image">
+                    </div>
+                `;
+                elements.removeImageBtn.classList.remove('hidden');
+                elements.imageUploadPlaceholder.classList.add('hidden');
+            } else {
+                elements.imagePreviewContainer.innerHTML = `
+                    <div id="image-upload-placeholder" class="image-upload-area">
+                        <div class="icon icon-lg mb-4 mx-auto">🖼️</div>
+                        <p>Haz clic en "Subir Imagen" para añadir una imagen del venue</p>
+                    </div>
+                `;
+                elements.removeImageBtn.classList.add('hidden');
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                appState.venueImage = e.target.result;
+                updateImageDisplay();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            appState.venueImage = null;
+            elements.imageInput.value = '';
+            updateImageDisplay();
+        }
+
+        // Funciones de exportación
+        function generateExportHTML(tableData) {
+            let html = `
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>CMS de Eventos - Tabla de Precios Dinámicas</title>
+                    <style>
+                        /* CSS Reset y variables */
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+
+                        :root {
+                            --background: hsl(0, 0%, 100%);
+                            --foreground: hsl(222.2, 84%, 4.9%);
+                            --card: hsl(0, 0%, 100%);
+                            --card-foreground: hsl(222.2, 84%, 4.9%);
+                            --primary: hsl(222.2, 47.4%, 11.2%);
+                            --primary-foreground: hsl(210, 40%, 98%);
+                            --secondary: hsl(210, 40%, 96.1%);
+                            --secondary-foreground: hsl(222.2, 47.4%, 11.2%);
+                            --muted: hsl(210, 40%, 96.1%);
+                            --muted-foreground: hsl(215.4, 16.3%, 46.9%);
+                            --accent: hsl(210, 40%, 96.1%);
+                            --accent-foreground: hsl(222.2, 47.4%, 11.2%);
+                            --destructive: hsl(0, 84.2%, 60.2%);
+                            --destructive-foreground: hsl(210, 40%, 98%);
+                            --border: hsl(214.3, 31.8%, 91.4%);
+                            --input: hsl(214.3, 31.8%, 91.4%);
+                            --radius: 0.5rem;
+                        }
+
+                        .dark {
+                            --background: hsl(222.2, 84%, 4.9%);
+                            --foreground: hsl(210, 40%, 98%);
+                            --card: hsl(222.2, 84%, 4.9%);
+                            --card-foreground: hsl(210, 40%, 98%);
+                            --primary: hsl(210, 40%, 98%);
+                            --primary-foreground: hsl(222.2, 47.4%, 11.2%);
+                            --secondary: hsl(217.2, 32.6%, 17.5%);
+                            --secondary-foreground: hsl(210, 40%, 98%);
+                            --muted: hsl(217.2, 32.6%, 17.5%);
+                            --muted-foreground: hsl(215, 20.2%, 65.1%);
+                            --accent: hsl(217.2, 32.6%, 17.5%);
+                            --accent-foreground: hsl(210, 40%, 98%);
+                            --destructive: hsl(0, 62.8%, 30.6%);
+                            --destructive-foreground: hsl(210, 40%, 98%);
+                            --border: hsl(217.2, 32.6%, 17.5%);
+                            --input: hsl(217.2, 32.6%, 17.5%);
+                        }
+
+                        /* Base styles */
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                            background: var(--background);
+                            color: var(--foreground);
+                            line-height: 1.5;
+                        }
+
+                        .container {
+                            min-height: 100vh;
+                            padding: 1rem;
+                            max-width: 1200px;
+                            margin: 0 auto;
+                        }
+
+                        /* Card styles */
+                        .card {
+                            background: var(--card);
+                            color: var(--card-foreground);
+                            border: 1px solid var(--border);
+                            border-radius: var(--radius);
+                            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                            margin-bottom: 1.5rem;
+                        }
+
+                        .card-header {
+                            padding: 1.5rem 1.5rem 0;
+                        }
+
+                        .card-title {
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                        }
+
+                        .card-content {
+                            padding: 1.5rem;
+                        }
+
+                        /* Button styles */
+                        .btn {
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0.5rem 1rem;
+                            border-radius: var(--radius);
+                            font-size: 0.875rem;
+                            font-weight: 500;
+                            border: none;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            text-decoration: none;
+                            gap: 0.5rem;
+                        }
+
+                        .btn-primary {
+                            background: var(--primary);
+                            color: var(--primary-foreground);
+                        }
+
+                        .btn-primary:hover {
+                            opacity: 0.9;
+                        }
+
+                        .btn-outline {
+                            background: transparent;
+                            color: var(--foreground);
+                            border: 1px solid var(--border);
+                        }
+
+                        .btn-outline:hover {
+                            background: var(--accent);
+                            color: var(--accent-foreground);
+                        }
+
+                        .btn-sm {
+                            padding: 0.25rem 0.75rem;
+                            font-size: 0.75rem;
+                        }
+
+                        .btn-ghost {
+                            background: transparent;
+                            color: var(--foreground);
+                        }
+
+                        .btn-ghost:hover {
+                            background: var(--accent);
+                            color: var(--accent-foreground);
+                        }
+
+                        /* Input styles */
+                        .input {
+                            width: 100%;
+                            padding: 0.5rem 0.75rem;
+                            border: 1px solid var(--border);
+                            border-radius: var(--radius);
+                            background: var(--background);
+                            color: var(--foreground);
+                            font-size: 0.875rem;
+                        }
+
+                        .input:focus {
+                            outline: none;
+                            border-color: var(--primary);
+                            box-shadow: 0 0 0 2px hsla(var(--primary), 0.2);
+                        }
+
+                        .input-sm {
+                            padding: 0.25rem 0.5rem;
+                            font-size: 0.75rem;
+                        }
+
+                        /* Label styles */
+                        .label {
+                            display: block;
+                            font-size: 0.875rem;
+                            font-weight: 500;
+                            margin-bottom: 0.5rem;
+                            color: var(--foreground);
+                        }
+
+                        /* Grid styles */
+                        .grid {
+                            display: grid;
+                            gap: 1rem;
+                        }
+
+                        .grid-cols-1 {
+                            grid-template-columns: repeat(1, minmax(0, 1fr));
+                        }
+
+                        .grid-cols-2 {
+                            grid-template-columns: repeat(2, minmax(0, 1fr));
+                        }
+
+                        @media (min-width: 768px) {
+                            .md\:grid-cols-2 {
+                                grid-template-columns: repeat(2, minmax(0, 1fr));
+                            }
+                        }
+
+                        /* Utility classes */
+                        .flex {
+                            display: flex;
+                        }
+
+                        .items-center {
+                            align-items: center;
+                        }
+
+                        .justify-between {
+                            justify-content: space-between;
+                        }
+
+                        .gap-2 {
+                            gap: 0.5rem;
+                        }
+
+                        .gap-4 {
+                            gap: 1rem;
+                        }
+
+                        .space-y-2 > * + * {
+                            margin-top: 0.5rem;
+                        }
+
+                        .space-y-4 > * + * {
+                            margin-top: 1rem;
+                        }
+
+                        .space-y-6 > * + * {
+                            margin-top: 1.5rem;
+                        }
+
+                        .text-2xl {
+                            font-size: 1.5rem;
+                        }
+
+                        .text-3xl {
+                            font-size: 1.875rem;
+                        }
+
+                        .font-bold {
+                            font-weight: 700;
+                        }
+
+                        .font-semibold {
+                            font-weight: 600;
+                        }
+
+                        .font-medium {
+                            font-weight: 500;
+                        }
+
+                        .text-primary {
+                            color: var(--primary);
+                        }
+
+                        .text-muted-foreground {
+                            color: var(--muted-foreground);
+                        }
+
+                        .text-center {
+                            text-align: center;
+                        }
+
+                        .text-left {
+                            text-align: left;
+                        }
+
+                        .bg-muted {
+                            background: var(--muted);
+                        }
+
+                        .bg-muted\/30 {
+                            background: hsla(var(--muted), 0.3);
+                        }
+
+                        .bg-muted\/50 {
+                            background: hsla(var(--muted), 0.5);
+                        }
+
+                        .hover\:bg-muted\/50:hover {
+                            background: hsla(var(--muted), 0.5);
+                        }
+
+                        .hidden {
+                            display: none;
+                        }
+
+                        .w-full {
+                            width: 100%;
+                        }
+
+                        .max-w-2xl {
+                            max-width: 42rem;
+                        }
+
+                        .mx-auto {
+                            margin-left: auto;
+                            margin-right: auto;
+                        }
+
+                        .mb-2 {
+                            margin-bottom: 0.5rem;
+                        }
+
+                        .mb-4 {
+                            margin-bottom: 1rem;
+                        }
+
+                        .py-8 {
+                            padding-top: 2rem;
+                            padding-bottom: 2rem;
+                        }
+
+                        .p-8 {
+                            padding: 2rem;
+                        }
+
+                        .rounded-lg {
+                            border-radius: 0.5rem;
+                        }
+
+                        .shadow-lg {
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                        }
+
+                        .border-2 {
+                            border-width: 2px;
+                        }
+
+                        .border-dashed {
+                            border-style: dashed;
+                        }
+
+                        .opacity-50 {
+                            opacity: 0.5;
+                        }
+
+                        .overflow-x-auto {
+                            overflow-x: auto;
+                        }
+
+                        /* Table styles */
+                        .table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            border: 1px solid var(--border);
+                        }
+
+                        .table th,
+                        .table td {
+                            border: 1px solid var(--border);
+                            padding: 0.75rem;
+                            text-align: left;
+                        }
+
+                        .table th {
+                            background: var(--muted);
+                            font-weight: 600;
+                        }
+
+                        .table tr:hover {
+                            background: var(--muted);
+                            background: hsla(var(--muted), 0.5);
+                        }
+
+                        /* Icon placeholder */
+                        .icon {
+                            width: 1rem;
+                            height: 1rem;
+                            display: inline-block;
+                            fill: currentColor;
+                        }
+
+                        .icon-lg {
+                            width: 3rem;
+                            height: 3rem;
+                        }
+
+                        /* Image upload area */
+                        .image-upload-area {
+                            border: 2px dashed var(--border);
+                            border-radius: var(--radius);
+                            padding: 2rem;
+                            text-align: center;
+                            color: var(--muted-foreground);
+                        }
+
+                        .venue-image {
+                            width: 100%;
+                            max-width: 32rem;
+                            margin: 0 auto;
+                            border-radius: var(--radius);
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                        }
+
+                        /* Toast notifications */
+                        .toast {
+                            position: fixed;
+                            top: 1rem;
+                            right: 1rem;
+                            background: var(--card);
+                            border: 1px solid var(--border);
+                            border-radius: var(--radius);
+                            padding: 1rem;
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                            z-index: 1000;
+                            transform: translateX(100%);
+                            opacity: 0;
+                            transition: all 0.3s ease;
+                        }
+
+                        .toast.show {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+
+                        .toast.error {
+                            border-color: var(--destructive);
+                            color: var(--destructive);
+                        }
+
+                        /* Sold out cell styles */
+                        .cell-sold-out {
+                            background: var(--muted) !important;
+                            color: var(--muted-foreground) !important;
+                            position: relative;
+                            text-decoration: line-through;
+                            opacity: 0.7;
+                        }
+
+                        .cell-sold-out::after {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: repeating-linear-gradient(
+                                45deg,
+                                transparent,
+                                transparent 2px,
+                                rgba(0,0,0,0.1) 2px,
+                                rgba(0,0,0,0.1) 4px
+                            );
+                            pointer-events: none;
+                        }
+
+                        /* Modal styles */
+                        .modal-overlay {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba(0, 0, 0, 0.5);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 1000;
+                            opacity: 0;
+                            visibility: hidden;
+                            transition: all 0.3s ease;
+                        }
+
+                        .modal-overlay.show {
+                            opacity: 1;
+                            visibility: visible;
+                        }
+
+                        .modal-content {
+                            background: var(--card);
+                            border: 1px solid var(--border);
+                            border-radius: var(--radius);
+                            padding: 1.5rem;
+                            max-width: 500px;
+                            width: 90%;
+                            max-height: 90vh;
+                            overflow-y: auto;
+                            transform: scale(0.9);
+                            transition: transform 0.3s ease;
+                        }
+
+                        .modal-overlay.show .modal-content {
+                            transform: scale(1);
+                        }
+
+                        /* Cell click styles */
+                        .cell-clickable {
+                            cursor: pointer;
+                            transition: background-color 0.2s ease;
+                        }
+
+                        .cell-clickable:hover {
+                            background: var(--accent) !important;
+                        }
+
+                        /* Preview box styles */
+                        .preview-box {
+                            border: 2px dashed var(--border);
+                            border-radius: var(--radius);
+                            padding: 1rem;
+                            background: var(--muted);
+                            min-height: 60px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 600;
+                        }
+
+                        .preview-normal {
+                            color: var(--primary);
+                        }
+
+                        .preview-sold-out {
+                            background: var(--muted);
+                            color: var(--muted-foreground);
+                            text-decoration: line-through;
+                            opacity: 0.7;
+                            position: relative;
+                        }
+
+                        .preview-sold-out::after {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: repeating-linear-gradient(
+                                45deg,
+                                transparent,
+                                transparent 2px,
+                                rgba(0,0,0,0.1) 2px,
+                                rgba(0,0,0,0.1) 4px
+                            );
+                            pointer-events: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="space-y-6">
+                            <!-- Header con controles -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="flex justify-between items-center">
+                                        <h1 class="card-title text-2xl font-bold">
+                                            CMS de Eventos - <span id="event-title-display">Nuevo Evento</span>
+                                        </h1>
+                                        <div class="flex gap-2">
+                                            <button id="toggle-edit-btn" class="btn btn-primary">Vista Previa</button>
+                                            <button id="download-json-btn" class="btn btn-outline">
+                                                ⬇️ Descargar JSON
+                                            </button>
+                                            <label class="btn btn-outline" for="load-json-input">
+                                                ⬆️ Cargar JSON
+                                                <input type="file" id="load-json-input" accept=".json" class="hidden">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información General -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        🏆 <span id="info-section-title">Información General</span>
+                                    </h2>
+                                </div>
+                                <div class="card-content">
+                                    <!-- Vista de edición -->
+                                    <div id="info-edit-view" class="space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="space-y-2">
+                                                <label class="label" for="event-title">Título del Evento</label>
+                                                <input id="event-title" class="input" placeholder="Nombre del evento" value="Nuevo Evento">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="label" for="event-date">Fecha del Evento</label>
+                                                <input id="event-date" class="input" type="datetime-local">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="label" for="event-venue">Lugar del Evento</label>
+                                                <input id="event-venue" class="input" placeholder="Nombre del venue">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="label" for="event-promoter">Promotor del Evento</label>
+                                                <input id="event-promoter" class="input" placeholder="Nombre del promotor">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vista previa -->
+                                    <div id="info-preview-view" class="hidden space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="space-y-2">
+                                                <h3 id="preview-title" class="text-3xl font-bold text-primary">Nuevo Evento</h3>
+                                                <div class="flex items-center gap-2 text-muted-foreground">
+                                                    📅 <span id="preview-date">Fecha por definir</span>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <div class="flex items-center gap-2 text-muted-foreground">
+                                                    📍 <span id="preview-venue">Lugar por definir</span>
+                                                </div>
+                                                <div class="flex items-center gap-2 text-muted-foreground">
+                                                    👤 <span id="preview-promoter">Promotor por definir</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Configuración de Estados -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        ⚙️ <span id="config-section-title">Configuración de Estados</span>
+                                    </h2>
+                                </div>
+                                <div class="card-content">
+                                    <!-- Vista de edición -->
+                                    <div id="config-edit-view" class="space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="space-y-2">
+                                                <label class="label" for="sold-out-text">Texto para Estado Agotado</label>
+                                                <input id="sold-out-text" class="input" placeholder="Agotado" value="Agotado">
+                                                <p class="text-sm text-muted-foreground">Personaliza el texto según tu país (ej: "Esgotado", "Sold Out")</p>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="label">Vista Previa del Estado</label>
+                                                <div class="space-y-2">
+                                                    <div class="preview-box preview-normal" id="price-preview-normal">$50.000</div>
+                                                    <div class="preview-box preview-sold-out" id="price-preview-sold-out">Agotado</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vista previa -->
+                                    <div id="config-preview-view" class="hidden space-y-4">
+                                        <div class="text-muted-foreground">
+                                            <p><strong>Texto de agotado configurado:</strong> <span id="preview-sold-out-text">Agotado</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Estructura de Precios -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        💰 <span id="price-section-title">Estructura de Precios</span>
+                                    </h2>
+                                </div>
+                                <div class="card-content">
+                                    <!-- Vista de edición -->
+                                    <div id="price-edit-view" class="space-y-4">
+                                        <div class="flex gap-2">
+                                            <button id="add-column-btn" class="btn btn-outline btn-sm">
+                                                ➕ Agregar Columna
+                                            </button>
+                                            <button id="add-row-btn" class="btn btn-outline btn-sm">
+                                                ➕ Agregar Fila
+                                            </button>
+                                        </div>
+                                        <div class="overflow-x-auto">
+                                            <table id="price-table-edit" class="table">
+                                                <thead>
+                                                    <tr id="table-header-edit">
+                                                        <th class="bg-muted">
+                                                            <span class="text-sm font-medium">Sectores</span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="table-body-edit">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vista previa -->
+                                    <div id="price-preview-view" class="hidden">
+                                        <div class="overflow-x-auto">
+                                            <table id="price-table-preview" class="table">
+                                                <thead>
+                                                    <tr id="table-header-preview">
+                                                        <th class="bg-muted font-semibold text-left">Sectores</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="table-body-preview">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Imagen del Venue -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        🖼️ Imagen del Venue
+                                    </h2>
+                                </div>
+                                <div class="card-content">
+                                    <!-- Vista de edición -->
+                                    <div id="image-edit-view" class="space-y-4">
+                                        <div class="flex gap-2">
+                                            <button id="upload-image-btn" class="btn btn-outline">
+                                                ⬆️ Subir Imagen
+                                            </button>
+                                            <button id="remove-image-btn" class="btn btn-outline hidden">
+                                                ❌ Eliminar Imagen
+                                            </button>
+                                        </div>
+                                        <input type="file" id="image-input" accept="image/*" class="hidden">
+                                        
+                                        <div id="image-preview-container">
+                                            <div id="image-upload-placeholder" class="image-upload-area">
+                                                <div class="icon icon-lg mb-4 mx-auto">🖼️</div>
+                                                <p>Haz clic en "Subir Imagen" para añadir una imagen del venue</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vista previa -->
+                                    <div id="image-preview-view" class="hidden">
+                                        <div id="image-preview-readonly">
+                                            <div class="text-center py-8 text-muted-foreground">
+                                                <div class="icon icon-lg mb-2 mx-auto opacity-50">🖼️</div>
+                                                <p>Sin imagen del venue</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toast container -->
+                    <div id="toast-container"></div>
+
+                    <!-- Cell Edit Modal -->
+                    <div id="cell-edit-modal" class="modal-overlay">
+                        <div class="modal-content">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold">Editar Celda de Precio</h3>
+                                    <button id="close-modal-btn" class="btn btn-ghost btn-sm">✕</button>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="space-y-2">
+                                        <label class="label">Sector: <span id="modal-sector-name"></span></label>
+                                        <label class="label">Categoría: <span id="modal-category-name"></span></label>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="space-y-4">
+                                            <div class="space-y-2">
+                                                <label class="label" for="modal-price-input">Precio</label>
+                                                <input id="modal-price-input" class="input" placeholder="$0" type="text">
+                                            </div>
+
+                                            <div class="space-y-2">
+                                                <div class="flex items-center gap-2">
+                                                    <input id="modal-sold-out-checkbox" type="checkbox" class="w-4 h-4">
+                                                    <label class="label" for="modal-sold-out-checkbox">Marcar como agotado</label>
+                                                </div>
+                                            </div>
+
+                                            <div id="custom-sold-out-section" class="space-y-2 hidden">
+                                                <label class="label" for="modal-custom-sold-out">Texto personalizado (opcional)</label>
+                                                <input id="modal-custom-sold-out" class="input" placeholder="Usar texto por defecto">
+                                                <p class="text-sm text-muted-foreground">Déjalo vacío para usar el texto configurado globalmente</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label class="label">Vista Previa</label>
+                                            <div class="preview-box" id="modal-cell-preview">$0</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2 justify-end">
+                                    <button id="modal-cancel-btn" class="btn btn-outline">Cancelar</button>
+                                    <button id="modal-save-btn" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            return html;
+        }
+
+        function generateExportCSS() {
+            return `
+                /* CSS Reset y variables */
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                :root {
+                    --background: hsl(0, 0%, 100%);
+                    --foreground: hsl(222.2, 84%, 4.9%);
+                    --card: hsl(0, 0%, 100%);
+                    --card-foreground: hsl(222.2, 84%, 4.9%);
+                    --primary: hsl(222.2, 47.4%, 11.2%);
+                    --primary-foreground: hsl(210, 40%, 98%);
+                    --secondary: hsl(210, 40%, 96.1%);
+                    --secondary-foreground: hsl(222.2, 47.4%, 11.2%);
+                    --muted: hsl(210, 40%, 96.1%);
+                    --muted-foreground: hsl(215.4, 16.3%, 46.9%);
+                    --accent: hsl(210, 40%, 96.1%);
+                    --accent-foreground: hsl(222.2, 47.4%, 11.2%);
+                    --destructive: hsl(0, 84.2%, 60.2%);
+                    --destructive-foreground: hsl(210, 40%, 98%);
+                    --border: hsl(214.3, 31.8%, 91.4%);
+                    --input: hsl(214.3, 31.8%, 91.4%);
+                    --radius: 0.5rem;
+                }
+
+                .dark {
+                    --background: hsl(222.2, 84%, 4.9%);
+                    --foreground: hsl(210, 40%, 98%);
+                    --card: hsl(222.2, 84%, 4.9%);
+                    --card-foreground: hsl(210, 40%, 98%);
+                    --primary: hsl(210, 40%, 98%);
+                    --primary-foreground: hsl(222.2, 47.4%, 11.2%);
+                    --secondary: hsl(217.2, 32.6%, 17.5%);
+                    --secondary-foreground: hsl(210, 40%, 98%);
+                    --muted: hsl(217.2, 32.6%, 17.5%);
+                    --muted-foreground: hsl(215, 20.2%, 65.1%);
+                    --accent: hsl(217.2, 32.6%, 17.5%);
+                    --accent-foreground: hsl(210, 40%, 98%);
+                    --destructive: hsl(0, 62.8%, 30.6%);
+                    --destructive-foreground: hsl(210, 40%, 98%);
+                    --border: hsl(217.2, 32.6%, 17.5%);
+                    --input: hsl(217.2, 32.6%, 17.5%);
+                }
+
+                /* Base styles */
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    background: var(--background);
+                    color: var(--foreground);
+                    line-height: 1.5;
+                }
+
+                .container {
+                    min-height: 100vh;
+                    padding: 1rem;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                }
+
+                /* Card styles */
+                .card {
+                    background: var(--card);
+                    color: var(--card-foreground);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                    margin-bottom: 1.5rem;
+                }
+
+                .card-header {
+                    padding: 1.5rem 1.5rem 0;
+                }
+
+                .card-title {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .card-content {
+                    padding: 1.5rem;
+                }
+
+                /* Button styles */
+                .btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.5rem 1rem;
+                    border-radius: var(--radius);
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    text-decoration: none;
+                    gap: 0.5rem;
+                }
+
+                .btn-primary {
+                    background: var(--primary);
+                    color: var(--primary-foreground);
+                }
+
+                .btn-primary:hover {
+                    opacity: 0.9;
+                }
+
+                .btn-outline {
+                    background: transparent;
+                    color: var(--foreground);
+                    border: 1px solid var(--border);
+                }
+
+                .btn-outline:hover {
+                    background: var(--accent);
+                    color: var(--accent-foreground);
+                }
+
+                .btn-sm {
+                    padding: 0.25rem 0.75rem;
+                    font-size: 0.75rem;
+                }
+
+                .btn-ghost {
+                    background: transparent;
+                    color: var(--foreground);
+                }
+
+                .btn-ghost:hover {
+                    background: var(--accent);
+                    color: var(--accent-foreground);
+                }
+
+                /* Input styles */
+                .input {
+                    width: 100%;
+                    padding: 0.5rem 0.75rem;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    background: var(--background);
+                    color: var(--foreground);
+                    font-size: 0.875rem;
+                }
+
+                .input:focus {
+                    outline: none;
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 2px hsla(var(--primary), 0.2);
+                }
+
+                .input-sm {
+                    padding: 0.25rem 0.5rem;
+                    font-size: 0.75rem;
+                }
+
+                /* Label styles */
+                .label {
+                    display: block;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    margin-bottom: 0.5rem;
+                    color: var(--foreground);
+                }
+
+                /* Grid styles */
+                .grid {
+                    display: grid;
+                    gap: 1rem;
+                }
+
+                .grid-cols-1 {
+                    grid-template-columns: repeat(1, minmax(0, 1fr));
+                }
+
+                .grid-cols-2 {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+
+                @media (min-width: 768px) {
+                    .md\:grid-cols-2 {
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                    }
+                }
+
+                /* Utility classes */
+                .flex {
+                    display: flex;
+                }
+
+                .items-center {
+                    align-items: center;
+                }
+
+                .justify-between {
+                    justify-content: space-between;
+                }
+
+                .gap-2 {
+                    gap: 0.5rem;
+                }
+
+                .gap-4 {
+                    gap: 1rem;
+                }
+
+                .space-y-2 > * + * {
+                    margin-top: 0.5rem;
+                }
+
+                .space-y-4 > * + * {
+                    margin-top: 1rem;
+                }
+
+                .space-y-6 > * + * {
+                    margin-top: 1.5rem;
+                }
+
+                .text-2xl {
+                    font-size: 1.5rem;
+                }
+
+                .text-3xl {
+                    font-size: 1.875rem;
+                }
+
+                .font-bold {
+                    font-weight: 700;
+                }
+
+                .font-semibold {
+                    font-weight: 600;
+                }
+
+                .font-medium {
+                    font-weight: 500;
+                }
+
+                .text-primary {
+                    color: var(--primary);
+                }
+
+                .text-muted-foreground {
+                    color: var(--muted-foreground);
+                }
+
+                .text-center {
+                    text-align: center;
+                }
+
+                .text-left {
+                    text-align: left;
+                }
+
+                .bg-muted {
+                    background: var(--muted);
+                }
+
+                .bg-muted\/30 {
+                    background: hsla(var(--muted), 0.3);
+                }
+
+                .bg-muted\/50 {
+                    background: hsla(var(--muted), 0.5);
+                }
+
+                .hover\:bg-muted\/50:hover {
+                    background: hsla(var(--muted), 0.5);
+                }
+
+                .hidden {
+                    display: none;
+                }
+
+                .w-full {
+                    width: 100%;
+                }
+
+                .max-w-2xl {
+                    max-width: 42rem;
+                }
+
+                .mx-auto {
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .mb-2 {
+                    margin-bottom: 0.5rem;
+                }
+
+                .mb-4 {
+                    margin-bottom: 1rem;
+                }
+
+                .py-8 {
+                    padding-top: 2rem;
+                    padding-bottom: 2rem;
+                }
+
+                .p-8 {
+                    padding: 2rem;
+                }
+
+                .rounded-lg {
+                    border-radius: 0.5rem;
+                }
+
+                .shadow-lg {
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                }
+
+                .border-2 {
+                    border-width: 2px;
+                }
+
+                .border-dashed {
+                    border-style: dashed;
+                }
+
+                .opacity-50 {
+                    opacity: 0.5;
+                }
+
+                .overflow-x-auto {
+                    overflow-x: auto;
+                }
+
+                /* Table styles */
+                .table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border: 1px solid var(--border);
+                }
+
+                .table th,
+                .table td {
+                    border: 1px solid var(--border);
+                    padding: 0.75rem;
+                    text-align: left;
+                }
+
+                .table th {
+                    background: var(--muted);
+                    font-weight: 600;
+                }
+
+                .table tr:hover {
+                    background: var(--muted);
+                    background: hsla(var(--muted), 0.5);
+                }
+
+                /* Icon placeholder */
+                .icon {
+                    width: 1rem;
+                    height: 1rem;
+                    display: inline-block;
+                    fill: currentColor;
+                }
+
+                .icon-lg {
+                    width: 3rem;
+                    height: 3rem;
+                }
+
+                /* Image upload area */
+                .image-upload-area {
+                    border: 2px dashed var(--border);
+                    border-radius: var(--radius);
+                    padding: 2rem;
+                    text-align: center;
+                    color: var(--muted-foreground);
+                }
+
+                .venue-image {
+                    width: 100%;
+                    max-width: 32rem;
+                    margin: 0 auto;
+                    border-radius: var(--radius);
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                }
+
+                /* Toast notifications */
+                .toast {
+                    position: fixed;
+                    top: 1rem;
+                    right: 1rem;
+                    background: var(--card);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 1rem;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                    z-index: 1000;
+                    transform: translateX(100%);
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                }
+
+                .toast.show {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+
+                .toast.error {
+                    border-color: var(--destructive);
+                    color: var(--destructive);
+                }
+
+                /* Sold out cell styles */
+                .cell-sold-out {
+                    background: var(--muted) !important;
+                    color: var(--muted-foreground) !important;
+                    position: relative;
+                    text-decoration: line-through;
+                    opacity: 0.7;
+                }
+
+                .cell-sold-out::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 2px,
+                        rgba(0,0,0,0.1) 2px,
+                        rgba(0,0,0,0.1) 4px
+                    );
+                    pointer-events: none;
+                }
+
+                /* Modal styles */
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: all 0.3s ease;
+                }
+
+                .modal-overlay.show {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                .modal-content {
+                    background: var(--card);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 1.5rem;
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    transform: scale(0.9);
+                    transition: transform 0.3s ease;
+                }
+
+                .modal-overlay.show .modal-content {
+                    transform: scale(1);
+                }
+
+                /* Cell click styles */
+                .cell-clickable {
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                }
+
+                .cell-clickable:hover {
+                    background: var(--accent) !important;
+                }
+
+                /* Preview box styles */
+                .preview-box {
+                    border: 2px dashed var(--border);
+                    border-radius: var(--radius);
+                    padding: 1rem;
+                    background: var(--muted);
+                    min-height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 600;
+                }
+
+                .preview-normal {
+                    color: var(--primary);
+                }
+
+                .preview-sold-out {
+                    background: var(--muted);
+                    color: var(--muted-foreground);
+                    text-decoration: line-through;
+                    opacity: 0.7;
+                    position: relative;
+                }
+
+                .preview-sold-out::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 2px,
+                        rgba(0,0,0,0.1) 2px,
+                        rgba(0,0,0,0.1) 4px
+                    );
+                    pointer-events: none;
+                }
+            `;
+        }
+
+        function getCurrentTableData() {
+            const tableData = {
+                columns: appState.priceTable.columns,
+                rows: appState.priceTable.rows,
+                cells: []
+            };
+
+            appState.priceTable.rows.forEach(row => {
+                appState.priceTable.columns.forEach(col => {
+                    const cell = getCellData(appState.priceTable.rows.indexOf(row), appState.priceTable.columns.indexOf(col));
+                    tableData.cells.push({
+                        row: row,
+                        col: col,
+                        price: cell.price,
+                        isSoldOut: cell.isSoldOut,
+                        customSoldOutText: cell.customSoldOutText
+                    });
+                });
+            });
+            return tableData;
+        }
+
+        function initializeCodeModal() {
+            console.log("Inicializando modal de código...");
+            const codeModal = document.getElementById('code-modal');
+            if (codeModal) {
+                console.log("Modal encontrado:", codeModal);
+                codeModal.classList.add('show');
+                console.log("¡Click en mostrar código detectado!");
+            } else {
+                console.warn("Botón de mostrar código no encontrado.");
+            }
+        }
+
+        // Event listeners
+        elements.toggleEditBtn.addEventListener('click', toggleEditMode);
+        elements.downloadJsonBtn.addEventListener('click', saveToJSON);
+        elements.loadJsonInput.addEventListener('change', loadFromJSON);
+        elements.addColumnBtn.addEventListener('click', addColumn);
+        elements.addRowBtn.addEventListener('click', addRow);
+        elements.uploadImageBtn.addEventListener('click', () => elements.imageInput.click());
+        elements.removeImageBtn.addEventListener('click', removeImage);
+        elements.imageInput.addEventListener('change', handleImageUpload);
+
+        // Form field event listeners
+        elements.eventTitle.addEventListener('input', (e) => {
+            appState.info.title = e.target.value;
+            updateEventTitleDisplay();
+        });
+
+        elements.eventDate.addEventListener('input', (e) => {
+            appState.info.date = e.target.value;
+        });
+
+        elements.eventVenue.addEventListener('input', (e) => {
+            appState.info.venue = e.target.value;
+        });
+
+        elements.eventPromoter.addEventListener('input', (e) => {
+            appState.info.promoter = e.target.value;
+        });
+
+        // Config field event listeners
+        elements.soldOutText.addEventListener('input', updateSoldOutText);
+
+        // Modal event listeners
+        elements.closeModalBtn.addEventListener('click', closeCellEditModal);
+        elements.modalCancelBtn.addEventListener('click', closeCellEditModal);
+        elements.modalSaveBtn.addEventListener('click', saveCellChanges);
+        elements.modalSoldOutCheckbox.addEventListener('change', () => {
+            toggleCustomSoldOutSection();
+            updateModalPreview();
+        });
+        elements.modalPriceInput.addEventListener('input', updateModalPreview);
+        elements.modalCustomSoldOut.addEventListener('input', updateModalPreview);
+
+        // Close modal when clicking outside
+        elements.cellEditModal.addEventListener('click', (e) => {
+            if (e.target === elements.cellEditModal) {
+                closeCellEditModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalState.isOpen) {
+                closeCellEditModal();
+            }
+        });
+
+        // Initialize
+        renderPriceTable();
+        updateEventTitleDisplay();
+        updateSoldOutText();
+    </script>
+</body>
+</html>
